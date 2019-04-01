@@ -4,7 +4,14 @@
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
     <color name="colorWhite">#FFFFFF</color>
+    <color name="colorBlack">#000000</color>
+    <color name="colorTransparent">#00FFFCFC</color>
+
+    <!-- BUTTON -->
     <color name="facebook_button">#3b5998</color>
     <color name="google_button">#dd4b39</color>
     <color name="twitter_button">#38A1F3</color>
+
+    <!-- TOOLBAR -->
+    <color name="toolbar_background">#FF5722</color>
 </resources>
