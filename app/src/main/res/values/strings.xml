@@ -13,4 +13,10 @@
     <string name="map_view" translatable="true">Map View</string>
     <string name="list_view" translatable="true">List View</string>
     <string name="workmates" translatable="true">Workmates</string>
+    
+    <!-- NAVIGATION MENU -->
+    <string name="yourLunch" translatable="true">YOUR LUNCH</string>
+    <string name="settings" translatable="true">SETTINGS</string>
+    <string name="logout" translatable="true">LOGOUT</string>
+
 </resources>
