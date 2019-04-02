@@ -4,19 +4,24 @@
     <string name="google_button">Sign in with Google</string>
     <string name="Go4Lunch" translatable="false">Go4Lunch</string>
     <string name="MainTextview" translatable="false">Find a nice restaurant and invite your co-workers for lunch!</string>
+    <string name="hello_blank_fragment" translatable="false">Hello blank fragment</string>
 
     <!-- FACEBOOK STRINGS -->
     <string name="facebook_application_id" translatable="false">335354017332870</string>
     <string name="facebook_login_protocol_scheme" translatable="false">tools:ignore="UnusedResources">fb335354017332870</string>
-    
+
     <!-- BOTTOM NAVIGATION VIEW -->
     <string name="map_view" translatable="true">Map View</string>
     <string name="list_view" translatable="true">List View</string>
     <string name="workmates" translatable="true">Workmates</string>
-    
+
     <!-- NAVIGATION MENU -->
     <string name="yourLunch" translatable="true">YOUR LUNCH</string>
     <string name="settings" translatable="true">SETTINGS</string>
     <string name="logout" translatable="true">LOGOUT</string>
+
+    <!-- NAVIGATION DRAWER -->
+    <string name="navigation_drawer_open" translatable="true">Open navigation drawer</string>
+    <string name="navigation_drawer_close" translatable="true">Close navigation drawer</string>
 
 </resources>

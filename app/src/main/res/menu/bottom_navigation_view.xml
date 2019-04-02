@@ -8,13 +8,13 @@
         android:title="@string/map_view"
         app:showAsAction="ifRoom" />
     <item
-        android:id="@+id/action_logo"
+        android:id="@+id/list_view"
         android:enabled="true"
         android:icon="@drawable/baseline_view_list_black_48"
         android:title="@string/list_view"
         app:showAsAction="ifRoom" />
     <item
-        android:id="@+id/action_landscape"
+        android:id="@+id/workmates"
         android:enabled="true"
         android:icon="@drawable/baseline_people_black_48"
         android:title="@string/workmates"

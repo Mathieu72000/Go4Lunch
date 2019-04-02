@@ -1,6 +1,7 @@
 package com.corroy.mathieu.go4lunch;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 
@@ -30,14 +31,37 @@ public class MainActivity extends BaseActivity {
     // - Identifier for Sign-In Activity
     private static final int RC_SIGN_IN = 123;
 
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        if(this.isCurrentUserLogged()) {
+            this.startActivityIfLogged();
+        }
+    }
+
     // --------------------
     // ACTIONS
     // --------------------
 
     @OnClick(R.id.mainActivity_google_login)
-    public void onClickGoogleButton(){this.startSignInActivityForGoogle(); }
+    public void onClickGoogleButton() {
+        if (this.isCurrentUserLogged()) {
+            this.startActivityIfLogged();
+        } else {
+            this.startSignInActivityForGoogle();
+        }
+    }
+
+    // Launch Sign-in
     @OnClick(R.id.mainActivity_facebook_login)
-    public void onClickFacebookButton(){this.startSignInActivityForFacebook();}
+    public void onClickFacebookButton() {
+        if (this.isCurrentUserLogged()) {
+            this.startActivityIfLogged();
+        } else {
+            this.startSignInActivityForFacebook();
+        }
+    }
 
 
     @Override
@@ -86,6 +110,11 @@ public class MainActivity extends BaseActivity {
     // UTILS
     // --------------------
 
+    private void startActivityIfLogged(){
+            Intent intent = new Intent(this, FirstScreenActivity.class);
+            startActivity(intent);
+    }
+
     // - Method that handles response after SignIn Activity close
     private void handleResponseAfterSignIn(int requestCode, int resultCode, Intent data){
 
@@ -94,6 +123,7 @@ public class MainActivity extends BaseActivity {
         if (requestCode == RC_SIGN_IN) {
             if (resultCode == RESULT_OK) { // SUCCESS
                 showSnackBar(this.coordinatorLayout, "Connexion Success !");
+                this.startActivityIfLogged();
             } else { // ERRORS
                 if (response == null) {
                     showSnackBar(this.coordinatorLayout, "Authentification Canceled");

@@ -14,4 +14,5 @@
 
     <!-- TOOLBAR -->
     <color name="toolbar_background">#EEFD6838</color>
+    <color name="toolbar_darker">#F45236</color>
 </resources>

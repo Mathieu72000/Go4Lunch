@@ -1,13 +1,10 @@
 package com.corroy.mathieu.go4lunch;
 
-
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-
 import butterknife.ButterKnife;
 
 public abstract class BaseActivity extends AppCompatActivity {

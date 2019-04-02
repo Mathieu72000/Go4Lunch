@@ -6,7 +6,7 @@
     android:orientation="vertical">
 
     <ImageView
-        android:id="@+id/navigation_imageview"
+        android:id="@+id/header_imageview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/lunchbackground2"/>
@@ -14,7 +14,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="20dp"
+        android:layout_margin="30dp"
         android:text="@string/Go4Lunch"
         android:textColor="@color/colorWhite"
         android:textSize="40sp"
@@ -22,11 +22,12 @@
         android:layout_centerHorizontal="true"/>
 
     <LinearLayout
-        android:id="@+id/navigation_linearLayout"
+        android:id="@+id/header_linearLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <ImageView
+            android:id="@+id/header_profile_picture"
             android:layout_width="65dp"
             android:layout_height="65dp"
             tools:background="@drawable/backgroundlunch"
@@ -34,7 +35,7 @@
             android:layout_margin="20dp"/>
 
         <TextView
-            android:id="@+id/navigation_name_textview"
+            android:id="@+id/header_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
@@ -47,6 +48,7 @@
     </LinearLayout>
 
     <TextView
+        android:id="@+id/header_email"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"

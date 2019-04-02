@@ -9,4 +9,6 @@
     <string name="logout">DÉCONNEXION</string>
     <string name="settings">PARAMETRES</string>
     <string name="yourLunch">VOTRE DÉJEUNER</string>
+    <string name="navigation_drawer_open">Ouvrir navigation drawer</string>
+    <string name="navigation_drawer_close">Fermer navigation drawer</string>
 </resources>

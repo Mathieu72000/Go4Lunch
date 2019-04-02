@@ -1,0 +1,36 @@
+package com.corroy.mathieu.go4lunch.Views;
+
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import com.corroy.mathieu.go4lunch.Fragments.ListView;
+import com.corroy.mathieu.go4lunch.Fragments.MapView;
+import com.corroy.mathieu.go4lunch.Fragments.Workmates;
+
+public class PagerAdapter extends FragmentPagerAdapter {
+
+    public PagerAdapter(FragmentManager fm) {
+        super(fm);
+    }
+
+    @Override
+    public Fragment getItem(int pos) {
+
+        switch(pos){
+
+            case 0:
+                return MapView.newInstance();
+            case 1:
+                return ListView.newInstance();
+            case 2:
+                return Workmates.newInstance();
+            default:
+                return MapView.newInstance();
+        }
+    }
+
+    @Override
+    public int getCount() {
+        return 3;
+    }
+}
