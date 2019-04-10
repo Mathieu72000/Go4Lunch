@@ -42,6 +42,7 @@ dependencies {
     // GLIDE
     implementation 'com.github.bumptech.glide:glide:4.8.0'
     implementation 'com.android.support.constraint:constraint-layout:1.1.3'
+
     annotationProcessor 'com.github.bumptech.glide:compiler:4.6.1'
 
     // BUTTERKNIFE
@@ -60,9 +61,14 @@ dependencies {
     // FIREBASEUI
     implementation 'com.firebaseui:firebase-ui-auth:4.3.1'
     implementation 'com.google.firebase:firebase-core:16.0.8'
+    implementation 'com.firebaseui:firebase-ui-firestore:3.1.3'
 
     // FACEBOOK
-    implementation 'com.facebook.android:facebook-android-sdk:[4,5)'
-    implementation 'com.firebaseui:firebase-ui-firestore:3.1.3'
+    implementation 'com.facebook.android:facebook-android-sdk:4.41.0'
+
+    // GOOGLE
+    implementation 'com.google.android.gms:play-services-maps:16.1.0'
+    implementation 'com.google.android.gms:play-services-location:16.0.0'
+    implementation 'com.google.android.libraries.places:places:1.1.0'
 }
 apply plugin: 'com.google.gms.google-services'

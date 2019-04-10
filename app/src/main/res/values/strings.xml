@@ -24,4 +24,7 @@
     <string name="navigation_drawer_open" translatable="true">Open navigation drawer</string>
     <string name="navigation_drawer_close" translatable="true">Close navigation drawer</string>
 
+    <!-- GOOGLE MAP -->
+    <string name="title_activity_maps" translatable="false">Map</string>
+
 </resources>
