@@ -16,14 +16,17 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.corroy.mathieu.go4lunch.Views.PagerAdapter;
 import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+
 import java.util.Objects;
+
 import butterknife.BindView;
+
 
 public class FirstScreenActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -44,6 +47,7 @@ public class FirstScreenActivity extends BaseActivity implements NavigationView.
 
     // FOR DATA
     private static final int SIGN_OUT_TASK = 10;
+    FirebaseAuth admin;
 
     @Override
     public int getFragmentLayout() {
@@ -62,7 +66,7 @@ public class FirstScreenActivity extends BaseActivity implements NavigationView.
 
         this.configureDrawerLayout();
 
-        View view = LayoutInflater.from(getApplicationContext()).inflate(R.layout.navigation_header, null);
+        View view = navigationView.getHeaderView(0);
         profileImageView = view.findViewById(R.id.header_profile_picture);
         emailTextView = view.findViewById(R.id.header_email);
         nameTextView = view.findViewById(R.id.header_name);
@@ -70,14 +74,13 @@ public class FirstScreenActivity extends BaseActivity implements NavigationView.
         this.updateUIWhenCreating();
 
         viewPager.setAdapter(new PagerAdapter(getSupportFragmentManager()));
-
     }
 
     // -------------------
     // ACTIONS
     // -------------------
 
-    public void onBackPressed(){
+    public void onBackPressed() {
         super.onBackPressed();
         this.signOutUserFromFirebase();
     }
@@ -111,13 +114,13 @@ public class FirstScreenActivity extends BaseActivity implements NavigationView.
     }
 
     // Handle Bottom Navigation View Click
-    private void configureBottomNavigationView(){
+    private void configureBottomNavigationView() {
         bottomNavigationView.setOnNavigationItemSelectedListener(menuItem -> {
 
             int id = menuItem.getItemId();
 
             // Set current location in the ViewPager to handle the position of the fragments
-            switch(id){
+            switch (id) {
                 case R.id.map_view:
                     viewPager.setCurrentItem(0);
                     break;
@@ -136,13 +139,13 @@ public class FirstScreenActivity extends BaseActivity implements NavigationView.
     }
 
     // Configure Toolbar
-    private void configureToolbar(){
+    private void configureToolbar() {
         setSupportActionBar(toolbar);
         Objects.requireNonNull(getSupportActionBar()).setTitle("I'm Hungry!");
     }
 
     // Configure DrawerLayout
-    private void configureDrawerLayout(){
+    private void configureDrawerLayout() {
         ActionBarDrawerToggle toogle = new ActionBarDrawerToggle(this,
                 drawerLayout,
                 toolbar,
@@ -153,18 +156,18 @@ public class FirstScreenActivity extends BaseActivity implements NavigationView.
     }
 
     // Configure NavigationView
-    private void configureNavigationView(){
+    private void configureNavigationView() {
         navigationView.setNavigationItemSelectedListener(this);
     }
 
-//     Update UI when activity is creating
-    private void updateUIWhenCreating(){
+    //     Update UI when activity is creating
+    private void updateUIWhenCreating() {
 
-        if(this.getCurrentUser() != null){
+        if (this.getCurrentUser() != null) {
 
             // Get picture URL from FireBase
-            if(this.getCurrentUser().getPhotoUrl() != null){
-            Glide.with(this)
+            if (this.getCurrentUser().getPhotoUrl() != null) {
+                Glide.with(this)
                         .load(this.getCurrentUser().getPhotoUrl())
                         .apply(RequestOptions.centerCropTransform())
                         .into(profileImageView);
@@ -173,11 +176,10 @@ public class FirstScreenActivity extends BaseActivity implements NavigationView.
             // Get email & username
             String email = TextUtils.isEmpty(this.getCurrentUser().getEmail()) ?
                     "No Email Found" : this.getCurrentUser().getEmail();
+            this.emailTextView.setText(email);
+
             String username = TextUtils.isEmpty(this.getCurrentUser().getDisplayName()) ?
                     "No Username Found" : this.getCurrentUser().getDisplayName();
-
-            // Update view with data
-            this.emailTextView.setText(email);
             this.nameTextView.setText(username);
         }
     }
@@ -188,7 +190,7 @@ public class FirstScreenActivity extends BaseActivity implements NavigationView.
 
     // Create http requests for SignOut
 
-    private void signOutUserFromFirebase(){
+    private void signOutUserFromFirebase() {
         AuthUI.getInstance()
                 .signOut(this)
                 .addOnSuccessListener(this, this.updateUIAfterRequestCompleted(SIGN_OUT_TASK));
@@ -199,9 +201,9 @@ public class FirstScreenActivity extends BaseActivity implements NavigationView.
     // -------------
 
     // Create OnCompleteListener called after tasks ended
-    private OnSuccessListener<Void> updateUIAfterRequestCompleted(final int origin){
+    private OnSuccessListener<Void> updateUIAfterRequestCompleted(final int origin) {
         return aVoid -> {
-            switch (origin){
+            switch (origin) {
                 case SIGN_OUT_TASK:
                     finish();
                     break;
