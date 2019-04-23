@@ -169,7 +169,7 @@ public class FirstScreenActivity extends BaseActivity implements NavigationView.
             if (this.getCurrentUser().getPhotoUrl() != null) {
                 Glide.with(this)
                         .load(this.getCurrentUser().getPhotoUrl())
-                        .apply(RequestOptions.centerCropTransform())
+                        .apply(RequestOptions.circleCropTransform())
                         .into(profileImageView);
             }
 

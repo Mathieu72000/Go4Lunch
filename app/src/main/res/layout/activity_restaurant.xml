@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.corroy.mathieu.go4lunch.RestaurantActivity">
+
+    <ImageView
+        android:id="@+id/restaurant_imageview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:background="@drawable/lunchbackground"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:background="@color/toolbar_darker"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:layout_weight="1">
+
+            <TextView
+                android:id="@+id/restaurant_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="LE ZINC"
+                android:textStyle="bold"
+                android:textColor="@color/colorWhite"
+                android:textSize="20sp"
+                android:padding="10dp"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/restaurant_type"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                tools:text="French Restaurant"
+                android:textStyle="bold"
+                android:padding="10dp"
+                android:textColor="@color/colorWhite"/>
+
+            <TextView
+                android:id="@+id/restaurant_tiret"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="-"
+                android:textStyle="bold"
+                android:textSize="20sp"
+                android:padding="5dp"
+                android:textColor="@color/colorWhite"/>
+
+            <TextView
+                android:id="@+id/restaurant_adresse"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:text="12 rue du faubourg poissoniere"
+                android:padding="10dp"
+                android:textStyle="bold"
+                android:textColor="@color/colorWhite"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/button_call"
+            style="?android:buttonBarButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:padding="10dp"
+            android:background="@color/colorWhite"
+            android:drawableTop="@drawable/baseline_call_black_36"
+            android:drawableTint="@color/toolbar_background"
+            android:text="CALL"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="@color/toolbar_background" />
+
+        <Button
+            android:id="@+id/button_like"
+            style="?android:buttonBarButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:padding="10dp"
+            android:background="@color/colorWhite"
+            android:drawableTop="@drawable/baseline_star_black_36"
+            android:drawableTint="@color/toolbar_background"
+            android:text="LIKE"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="@color/toolbar_background"/>
+
+        <Button
+            android:id="@+id/button_website"
+            style="?android:buttonBarButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:padding="10dp"
+            android:background="@color/colorWhite"
+            android:drawableTop="@drawable/sharp_public_black_36"
+            android:drawableTint="@color/toolbar_background"
+            android:text="WEBSITE"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="@color/toolbar_background"/>
+    </LinearLayout>
+
+    <include layout="@layout/recyclerview"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"/>
+
+</LinearLayout>
