@@ -47,7 +47,6 @@ public class FirstScreenActivity extends BaseActivity implements NavigationView.
 
     // FOR DATA
     private static final int SIGN_OUT_TASK = 10;
-    FirebaseAuth admin;
 
     @Override
     public int getFragmentLayout() {

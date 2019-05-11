@@ -1,6 +1,10 @@
 package com.corroy.mathieu.go4lunch.Utils;
 
+import com.corroy.mathieu.go4lunch.Models.Details;
 import com.corroy.mathieu.go4lunch.Models.Google;
+import com.corroy.mathieu.go4lunch.Models.Metrix.Matrix;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import io.reactivex.Observable;
 import retrofit2.Retrofit;
@@ -21,12 +25,18 @@ public interface Go4LunchService {
                                            @Query("radius") int radius,
                                            @Query("type") String type);
 
-    @GET("maps/api/place/photo?maxwidth=400&photoreference=CnRtAAAATLZNl354RwP_9UKbQ_5Psy40texXePv4oAlgP4qNEkdIrkyse7rPXYGd9D_Uj1rVsQdWT4oRz4QrYAJNpFX7rzqqMlZw2h2E2y5IKMUZ7ouD_SlcHxYq1yL4KbKUv3qtWgTK0A6QbGh87GB3sscrHRIQiG2RrmU_jF4tENr9wGS_YxoUSSDrYjWmrNfeEHSGSc3FyhNLlBU&key=AIzaSyDXI74hOiHLi4l2vhUEs23260f055xyXvI")
-    Observable<Google> getGooglePhotos();
+    @GET("maps/api/place/details/json?key=AIzaSyDXI74hOiHLi4l2vhUEs23260f055xyXvI")
+    Observable<Details> getGoogleDetails(@Query("placeid") String placeId);
+
+    @GET("maps/api/distancematrix/json?key=AIzaSyDXI74hOiHLi4l2vhUEs23260f055xyXvI")
+    Observable<Matrix> getGoogleDistance(@Query("origins") String origins,
+                                         @Query("destinations") String destinations);
 
     Retrofit retrofit = new Retrofit.Builder()
             .baseUrl("https://maps.googleapis.com/")
             .addConverterFactory(GsonConverterFactory.create())
             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
             .build();
+
+    Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
 }

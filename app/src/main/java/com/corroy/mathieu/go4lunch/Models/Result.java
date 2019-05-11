@@ -6,8 +6,24 @@ import com.google.gson.annotations.SerializedName;
 
 public class Result {
 
-    @SerializedName("geometry")
+
+    @SerializedName("address_components")
     @Expose
+    private List<AddressComponent> addressComponents = null;
+    @SerializedName("adr_address")
+    @Expose
+    private String adrAddress;
+    @SerializedName("formatted_address")
+    @Expose
+    private String formattedAddress;
+    @SerializedName("formatted_phone_number")
+    @Expose
+    private String formattedPhoneNumber;
+    @SerializedName("rating")
+    @Expose
+    private Double rating;
+    @Expose
+    @SerializedName("geometry")
     private Geometry geometry;
     @SerializedName("icon")
     @Expose
@@ -42,6 +58,57 @@ public class Result {
     @SerializedName("vicinity")
     @Expose
     private String vicinity;
+    @SerializedName("website")
+    @Expose
+    private String website;
+
+    public List<AddressComponent> getAddressComponents() {
+        return addressComponents;
+    }
+
+    public void setAddressComponents(List<AddressComponent> addressComponents) {
+        this.addressComponents = addressComponents;
+    }
+
+    public String getAdrAddress() {
+        return adrAddress;
+    }
+
+    public void setAdrAddress(String adrAddress) {
+        this.adrAddress = adrAddress;
+    }
+
+    public String getFormattedAddress() {
+        return formattedAddress;
+    }
+
+    public void setFormattedAddress(String formattedAddress) {
+        this.formattedAddress = formattedAddress;
+    }
+
+    public String getFormattedPhoneNumber() {
+        return formattedPhoneNumber;
+    }
+
+    public void setFormattedPhoneNumber(String formattedPhoneNumber) {
+        this.formattedPhoneNumber = formattedPhoneNumber;
+    }
+
+    public Double getRating() {
+        return rating;
+    }
+
+    public void setRating(Double rating) {
+        this.rating = rating;
+    }
+
+    public String getWebsite() {
+        return website;
+    }
+
+    public void setWebsite(String website) {
+        this.website = website;
+    }
 
     public Geometry getGeometry() {
         return geometry;

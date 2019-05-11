@@ -1,6 +1,8 @@
 package com.corroy.mathieu.go4lunch;
 
+import android.Manifest;
 import android.content.Intent;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
@@ -14,6 +16,8 @@ import com.google.firebase.auth.FirebaseUser;
 import java.util.Arrays;
 import butterknife.BindView;
 import butterknife.OnClick;
+import pub.devrel.easypermissions.AfterPermissionGranted;
+import pub.devrel.easypermissions.EasyPermissions;
 
 public class MainActivity extends BaseActivity {
 
@@ -30,10 +34,13 @@ public class MainActivity extends BaseActivity {
     //FOR DATA
     // - Identifier for Sign-In Activity
     private static final int RC_SIGN_IN = 123;
+    private final int REQUEST_LOCATION_PERMISSION = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        requestLocationPermission();
 
         if(this.isCurrentUserLogged()) {
             this.startActivityIfLogged();
@@ -133,6 +140,29 @@ public class MainActivity extends BaseActivity {
                     showSnackBar(this.coordinatorLayout, "Unknown Error");
                 }
             }
+        }
+    }
+
+
+    // -------------------
+    // PERMISSIONS
+    // -------------------
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        // Forward results to EasyPermissions
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
+    }
+
+    @AfterPermissionGranted(REQUEST_LOCATION_PERMISSION)
+    public void requestLocationPermission() {
+        String[] perms = {Manifest.permission.ACCESS_FINE_LOCATION};
+        if(EasyPermissions.hasPermissions(this, perms)) {
+        }
+        else {
+            EasyPermissions.requestPermissions(this, "Please grant the location permission", REQUEST_LOCATION_PERMISSION, perms);
         }
     }
 }

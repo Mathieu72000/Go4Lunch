@@ -1,6 +1,7 @@
 package com.corroy.mathieu.go4lunch.Fragments;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
@@ -22,6 +23,7 @@ import android.widget.Toast;
 import com.corroy.mathieu.go4lunch.Models.Google;
 import com.corroy.mathieu.go4lunch.Models.Result;
 import com.corroy.mathieu.go4lunch.R;
+import com.corroy.mathieu.go4lunch.RestaurantActivity;
 import com.corroy.mathieu.go4lunch.Utils.GPSTracker;
 import com.corroy.mathieu.go4lunch.Utils.Go4LunchStreams;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -90,6 +92,12 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Goo
     public void onStart(){
         super.onStart();
         mMapView.onStart();
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        mMapView.onResume();
     }
 
     @Override
@@ -176,7 +184,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Goo
 
     // Create a new subscriber
     private void executeHttpRequestWithRetrofit(){
-        this.mDisposable = Go4LunchStreams.streamFetchGooglePlaces(position, 15000, "restaurant").subscribeWith(new DisposableObserver<Google>() {
+        this.mDisposable = Go4LunchStreams.streamFetchGooglePlaces(position, 50000, "restaurant").subscribeWith(new DisposableObserver<Google>() {
             @Override
             public void onNext(Google google) {
                 result.addAll(google.getResults());
@@ -212,5 +220,15 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Goo
             mGoogleMap.addMarker(new MarkerOptions().position(restau).title(mResult.getName()).snippet(mResult.getVicinity())
                     .icon(BitmapDescriptorFactory.fromBitmap(marker)));
         }
+    }
+
+    private void startRestaurantActivity(int position){
+        Intent intent = new Intent(getContext(), RestaurantActivity.class);
+        String placeId = result.get(position).getPlaceId();
+        intent.putExtra("placeid", placeId);
+        if(result.get(position).getPhotos() != null) {
+            intent.putExtra("picture", result.get(position).getPhotos().get(0).getPhotoReference());
+        }
+        getContext().startActivity(intent);
     }
 }
