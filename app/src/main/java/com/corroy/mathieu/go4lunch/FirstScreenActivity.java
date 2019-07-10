@@ -18,11 +18,23 @@ import android.widget.TextView;
 import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.corroy.mathieu.go4lunch.Models.Result;
+import com.corroy.mathieu.go4lunch.Models.User;
+import com.corroy.mathieu.go4lunch.Models.UserHelper;
 import com.corroy.mathieu.go4lunch.Views.PagerAdapter;
 import com.firebase.ui.auth.AuthUI;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentChange;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import butterknife.BindView;
@@ -47,6 +59,10 @@ public class FirstScreenActivity extends BaseActivity implements NavigationView.
 
     // FOR DATA
     private static final int SIGN_OUT_TASK = 10;
+    private String COLLECTION_NAME = "users";
+
+    public static List<User> userList;
+    Result result;
 
     @Override
     public int getFragmentLayout() {
@@ -73,6 +89,8 @@ public class FirstScreenActivity extends BaseActivity implements NavigationView.
         this.updateUIWhenCreating();
 
         viewPager.setAdapter(new PagerAdapter(getSupportFragmentManager()));
+
+        this.executeFirebaseRequest();
     }
 
     // -------------------
@@ -177,11 +195,18 @@ public class FirstScreenActivity extends BaseActivity implements NavigationView.
                     "No Email Found" : this.getCurrentUser().getEmail();
             this.emailTextView.setText(email);
 
-            String username = TextUtils.isEmpty(this.getCurrentUser().getDisplayName()) ?
-                    "No Username Found" : this.getCurrentUser().getDisplayName();
-            this.nameTextView.setText(username);
+//            String username = TextUtils.isEmpty(this.getCurrentUser().getDisplayName()) ?
+//                    "No Username Found" : this.getCurrentUser().getDisplayName();
+//            this.nameTextView.setText(username);
+            UserHelper.getUser(this.getCurrentUser().getUid()).addOnSuccessListener(documentSnapshot -> {
+                User currentUser = documentSnapshot.toObject(User.class);
+                assert currentUser != null;
+                String username = TextUtils.isEmpty(currentUser.getUsername()) ?
+                        "No username found" : currentUser.getUsername();
+                nameTextView.setText(username);
+            });
+                }
         }
-    }
 
     // -----------------
     // REST REQUEST
@@ -195,6 +220,32 @@ public class FirstScreenActivity extends BaseActivity implements NavigationView.
                 .addOnSuccessListener(this, this.updateUIAfterRequestCompleted(SIGN_OUT_TASK));
     }
 
+    private void executeFirebaseRequest(){
+        userList = new ArrayList<>();
+        FirebaseFirestore.getInstance()
+                .collection(COLLECTION_NAME)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if(task.isSuccessful()){
+                            List<DocumentSnapshot> myListOfDocument = task.getResult().getDocuments();
+                            for(DocumentSnapshot documentSnapshot : myListOfDocument){
+                                UserHelper.getUser(documentSnapshot.getId()).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                    @Override
+                                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                        User user = documentSnapshot.toObject(User.class);
+                                        if(!user.getUid().equals(getCurrentUser().getUid())){
+                                            userList.add(user);
+                                        }
+                                    }
+                                });
+                            }
+                        }
+                    }
+                });
+    }
+
     // -------------
     // UI
     // -------------
@@ -202,12 +253,8 @@ public class FirstScreenActivity extends BaseActivity implements NavigationView.
     // Create OnCompleteListener called after tasks ended
     private OnSuccessListener<Void> updateUIAfterRequestCompleted(final int origin) {
         return aVoid -> {
-            switch (origin) {
-                case SIGN_OUT_TASK:
-                    finish();
-                    break;
-                default:
-                    break;
+            if (origin == SIGN_OUT_TASK) {
+                finish();
             }
         };
     }

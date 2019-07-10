@@ -27,4 +27,6 @@
     <!-- GOOGLE MAP -->
     <string name="title_activity_maps" translatable="false">Map</string>
 
+    <string name="list_unit_distance" translatable="false">%1$sm</string>
+
 </resources>

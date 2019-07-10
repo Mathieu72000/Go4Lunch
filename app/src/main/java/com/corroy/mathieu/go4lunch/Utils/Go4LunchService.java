@@ -28,9 +28,9 @@ public interface Go4LunchService {
     @GET("maps/api/place/details/json?key=AIzaSyDXI74hOiHLi4l2vhUEs23260f055xyXvI")
     Observable<Details> getGoogleDetails(@Query("placeid") String placeId);
 
-    @GET("maps/api/distancematrix/json?key=AIzaSyDXI74hOiHLi4l2vhUEs23260f055xyXvI")
-    Observable<Matrix> getGoogleDistance(@Query("origins") String origins,
-                                         @Query("destinations") String destinations);
+//    @GET("maps/api/distancematrix/json?key=AIzaSyDXI74hOiHLi4l2vhUEs23260f055xyXvI")
+//    Observable<Matrix> getGoogleDistance(@Query("origins") String origins,
+//                                         @Query("destinations") String destinations);
 
     Retrofit retrofit = new Retrofit.Builder()
             .baseUrl("https://maps.googleapis.com/")

@@ -4,12 +4,16 @@ import android.Manifest;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
+import android.widget.Toast;
 
+import com.corroy.mathieu.go4lunch.Models.UserHelper;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -122,6 +126,18 @@ public class MainActivity extends BaseActivity {
             startActivity(intent);
     }
 
+    private void createUserFirestore(){
+        if(this.getCurrentUser() != null){
+            String urlPicture = (this.getCurrentUser().getPhotoUrl() != null) ? this.getCurrentUser().getPhotoUrl().toString() : null;
+            String username = this.getCurrentUser().getDisplayName();
+            String email = this.getCurrentUser().getEmail();
+            String uid = this.getCurrentUser().getUid();
+
+            UserHelper.createUser(uid, username, email, urlPicture)
+                    .addOnFailureListener(e -> Toast.makeText(getApplicationContext(), "Error during creating new user", Toast.LENGTH_SHORT).show());
+        }
+    }
+
     // - Method that handles response after SignIn Activity close
     private void handleResponseAfterSignIn(int requestCode, int resultCode, Intent data){
 
@@ -130,6 +146,7 @@ public class MainActivity extends BaseActivity {
         if (requestCode == RC_SIGN_IN) {
             if (resultCode == RESULT_OK) { // SUCCESS
                 showSnackBar(this.coordinatorLayout, "Connexion Success !");
+                this.createUserFirestore();
                 this.startActivityIfLogged();
             } else { // ERRORS
                 if (response == null) {

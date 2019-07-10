@@ -24,12 +24,14 @@ import com.corroy.mathieu.go4lunch.Models.Google;
 import com.corroy.mathieu.go4lunch.Models.Result;
 import com.corroy.mathieu.go4lunch.R;
 import com.corroy.mathieu.go4lunch.RestaurantActivity;
+import com.corroy.mathieu.go4lunch.Utils.AppConfig;
 import com.corroy.mathieu.go4lunch.Utils.GPSTracker;
 import com.corroy.mathieu.go4lunch.Utils.Go4LunchStreams;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
@@ -43,8 +45,8 @@ import io.reactivex.observers.DisposableObserver;
 
 public class MapViewFragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnMyLocationClickListener, GoogleMap.OnMyLocationButtonClickListener, GoogleMap.OnMarkerClickListener{
 
-    private MapView mMapView;
     private View mView;
+    private SupportMapFragment mapFragment;
     private GoogleMap mGoogleMap;
     private Disposable mDisposable;
     private List<Result> result;
@@ -68,60 +70,44 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Goo
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mView = inflater.inflate(R.layout.fragment_map_view, container, false);
-        return mView;
-    }
-
-    // Called immediately after onCreateView
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
 
         mGPSTracker = new GPSTracker(getContext());
 
-        // Instantiate map
-        mMapView = mView.findViewById(R.id.mapview);
-        if (mMapView != null) {
-            mMapView.onCreate(null);
-            mMapView.onResume();
-            mMapView.getMapAsync(this);
-            result = new ArrayList<>();
-        }
+        mapFragment = (SupportMapFragment) this.getChildFragmentManager().findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
+
+        result = new ArrayList<>();
+
+        return mView;
     }
 
-    @Override
-    public void onStart(){
-        super.onStart();
-        mMapView.onStart();
-    }
+    // ------------------
+    // RETROFIT
+    // ------------------
 
-    @Override
-    public void onResume(){
-        super.onResume();
-        mMapView.onResume();
-    }
+    // Create a new subscriber
+    private void executeHttpRequestWithRetrofit(){
+        this.mDisposable = Go4LunchStreams.streamFetchGooglePlaces(position, 7000, "restaurant").subscribeWith(new DisposableObserver<Google>() {
+            @Override
+            public void onNext(Google google) {
+                result.addAll(google.getResults());
+                updateGoogleUi();
+                Log.i("GOOGLE API", String.valueOf(google.getResults().size()));
+                Log.i("GOOGLE API", "ON NEXT");
+                Log.i("LOCATION", String.valueOf(position));
 
-    @Override
-    public void onPause(){
-        super.onPause();
-        mMapView.onPause();
-    }
+            }
 
-    @Override
-    public void onStop(){
-        super.onStop();
-        mMapView.onStop();
-    }
+            @Override
+            public void onError(Throwable e) {
+                Log.i("GOOGLE API", e.getMessage());
+            }
 
-    @Override
-    public void onLowMemory(){
-        super.onLowMemory();
-        mMapView.onLowMemory();
-    }
-
-    @Override
-    public void onDestroy(){
-        super.onDestroy();
-        this.disposeWhenDestroy();
+            @Override
+            public void onComplete() {
+                Log.i("GOOGLE API", "ON COMPLETE");
+            }
+        });
     }
 
     // Called when the map is ready to be used
@@ -131,7 +117,6 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Goo
         mGoogleMap.setOnMarkerClickListener(this);
         mGoogleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (ContextCompat.checkSelfPermission(Objects.requireNonNull(getContext()),
                     Manifest.permission.ACCESS_FINE_LOCATION)
                     == PackageManager.PERMISSION_GRANTED) {
@@ -140,17 +125,16 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Goo
                 mGoogleMap.setOnMyLocationClickListener(this);
             } else {
                 // Show rationale and request permission
-                }
             }
-                latLng = new LatLng(mGPSTracker.getLatitude(), mGPSTracker.getLongitude());
-                position = mGPSTracker.getLatitude() + "," + mGPSTracker.getLongitude();
+                 latLng = new LatLng(mGPSTracker.getLatitude(), mGPSTracker.getLongitude());
+                 position = mGPSTracker.getLatitude() + "," + mGPSTracker.getLongitude();
+                AppConfig.setPosition(position);
                 googleMap.addMarker(new MarkerOptions().position(latLng).title("Marker Title").snippet("Marker Description"));
-                Toast.makeText(getContext(), position, Toast.LENGTH_LONG).show();
                 CameraPosition cameraPosition = new CameraPosition.Builder().target(latLng).zoom(12).build();
                 googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 
-                // Set the Location Button
-                View myLocationButton = ((View) mMapView.findViewById(Integer.parseInt("1")).getParent()).findViewById(Integer.parseInt("2"));
+//              Set the Location Button
+                View myLocationButton = ((View) mapFragment.getView().findViewById(Integer.parseInt("1")).getParent()).findViewById(Integer.parseInt("2"));
                 RelativeLayout.LayoutParams rlp = (RelativeLayout.LayoutParams) myLocationButton.getLayoutParams();
                 rlp.addRule(RelativeLayout.ALIGN_PARENT_TOP, 0);
                 rlp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
@@ -162,7 +146,6 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Goo
     // Handle the user click to change the marker color
     @Override
     public boolean onMarkerClick(Marker marker) {
-        marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.ic_restaurant_marker_green));
         return false;
     }
 
@@ -178,33 +161,26 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Goo
         return false;
     }
 
-    // ------------------
-    // RETROFIT
-    // ------------------
+    @Override
+    public void onDestroy(){
+        super.onDestroy();
+        this.disposeWhenDestroy();
+    }
 
-    // Create a new subscriber
-    private void executeHttpRequestWithRetrofit(){
-        this.mDisposable = Go4LunchStreams.streamFetchGooglePlaces(position, 50000, "restaurant").subscribeWith(new DisposableObserver<Google>() {
-            @Override
-            public void onNext(Google google) {
-                result.addAll(google.getResults());
-                Log.i("GOOGLE API", String.valueOf(google.getResults().size()));
-                Log.i("GOOGLE API", "ON NEXT");
-                Log.i("LOCATION", String.valueOf(position));
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                Log.i("GOOGLE API", e.getMessage());
-            }
-
-            @Override
-            public void onComplete() {
-                Log.i("GOOGLE API", "ON COMPLETE");
-                updateGoogleUi();
-            }
-        });
+    // Add markers for each result on Gmap
+    private void updateGoogleUi(){
+        int height = 90;
+        int width = 90;
+        BitmapDrawable bitmapDrawable = (BitmapDrawable)getResources().getDrawable(R.drawable.ic_restaurant_marker_orange);
+        Bitmap bitmap = bitmapDrawable.getBitmap();
+        Bitmap iconSize = Bitmap.createScaledBitmap(bitmap, width, height, false);
+        for(Result mResult : result){
+            LatLng restau = new LatLng(mResult.getGeometry().getLocation().getLat(), mResult.getGeometry().getLocation().getLng());
+            mGoogleMap.addMarker(new MarkerOptions().position(restau)
+                    .title(mResult.getName())
+                    .snippet(mResult.getVicinity())
+                    .icon(BitmapDescriptorFactory.fromBitmap(iconSize)));
+        }
     }
 
     // Dispose subscription
@@ -212,23 +188,14 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback, Goo
         if (this.mDisposable != null && !this.mDisposable.isDisposed()) this.mDisposable.dispose();
     }
 
-    private void updateGoogleUi(){
-        Drawable draw = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_restaurant_marker_orange, null);
-        Bitmap marker = ((BitmapDrawable)draw).getBitmap();
-        for(Result mResult : result){
-            LatLng restau = new LatLng(mResult.getGeometry().getLocation().getLat(), mResult.getGeometry().getLocation().getLng());
-            mGoogleMap.addMarker(new MarkerOptions().position(restau).title(mResult.getName()).snippet(mResult.getVicinity())
-                    .icon(BitmapDescriptorFactory.fromBitmap(marker)));
-        }
-    }
-
-    private void startRestaurantActivity(int position){
-        Intent intent = new Intent(getContext(), RestaurantActivity.class);
-        String placeId = result.get(position).getPlaceId();
-        intent.putExtra("placeid", placeId);
-        if(result.get(position).getPhotos() != null) {
-            intent.putExtra("picture", result.get(position).getPhotos().get(0).getPhotoReference());
-        }
-        getContext().startActivity(intent);
-    }
+//    // Start RestaurantActivity when the user click on a marker
+//    private void startRestaurantActivity(int position){
+//        Intent intent = new Intent(getContext(), RestaurantActivity.class);
+//        String placeId = result.get(position).getPlaceId();
+//        intent.putExtra("ID", placeId);
+//        if(result.get(position).getPhotos() != null) {
+//            intent.putExtra("PICTURE", result.get(position).getPhotos().get(0).getPhotoReference());
+//        }
+//        getContext().startActivity(intent);
+//    }
 }

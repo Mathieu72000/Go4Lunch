@@ -2,14 +2,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/twitter_button"
     tools:context="com.corroy.mathieu.go4lunch.Fragments.Workmates">
 
-    <TextView
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/fragment_workmates_recyclerview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="FRAGMENT 3"
-        android:textSize="40sp"
-        android:layout_margin="50dp"/>
+        android:layout_margin="10dp">
+    </android.support.v7.widget.RecyclerView>
 
 </LinearLayout>

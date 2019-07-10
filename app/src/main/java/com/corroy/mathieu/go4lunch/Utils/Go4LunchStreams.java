@@ -30,11 +30,11 @@ public class Go4LunchStreams {
                 .timeout(500, TimeUnit.SECONDS);
     }
 
-    public static Observable<Matrix> streamFetchMatrix(String origins, String destinations){
-        Go4LunchService go4LunchService = Go4LunchService.retrofit.create(Go4LunchService.class);
-        return go4LunchService.getGoogleDistance(origins, destinations)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .timeout(500, TimeUnit.SECONDS);
-    }
+//    public static Observable<Matrix> streamFetchMatrix(String origins, String destinations){
+//        Go4LunchService go4LunchService = Go4LunchService.retrofit.create(Go4LunchService.class);
+//        return go4LunchService.getGoogleDistance(origins, destinations)
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .timeout(500, TimeUnit.SECONDS);
+//    }
 }
