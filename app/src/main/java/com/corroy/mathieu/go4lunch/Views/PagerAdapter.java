@@ -1,13 +1,11 @@
 package com.corroy.mathieu.go4lunch.Views;
 
-
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
-
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
 import com.corroy.mathieu.go4lunch.Fragments.ListViewFragment;
 import com.corroy.mathieu.go4lunch.Fragments.MapViewFragment;
-import com.corroy.mathieu.go4lunch.Fragments.Workmates;
+import com.corroy.mathieu.go4lunch.Fragments.WorkmatesFragment;
 
 public class PagerAdapter extends FragmentPagerAdapter {
 
@@ -25,7 +23,7 @@ public class PagerAdapter extends FragmentPagerAdapter {
             case 1:
                 return ListViewFragment.newInstance();
             case 2:
-                return Workmates.newInstance();
+                return WorkmatesFragment.newInstance();
             default:
                 return MapViewFragment.newInstance();
         }

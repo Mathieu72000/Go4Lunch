@@ -1,25 +1,22 @@
 package com.corroy.mathieu.go4lunch.Views;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import com.bumptech.glide.RequestManager;
 import com.corroy.mathieu.go4lunch.Models.User;
 import com.corroy.mathieu.go4lunch.R;
 import java.util.List;
 
 public class WorkmatesAdapter extends RecyclerView.Adapter<WorkmatesViewHolder> {
 
-    private RequestManager glide;
     private List<User> user;
     private Context context;
 
-    public WorkmatesAdapter(List<User> user, RequestManager glide){
+    public WorkmatesAdapter(List<User> user){
         this.user = user;
-        this.glide = glide;
     }
 
     @NonNull
@@ -33,7 +30,7 @@ public class WorkmatesAdapter extends RecyclerView.Adapter<WorkmatesViewHolder> 
 
     @Override
     public void onBindViewHolder(@NonNull WorkmatesViewHolder workmatesViewHolder, int i) {
-        workmatesViewHolder.updateData(user.get(i), glide);
+        workmatesViewHolder.updateData(user.get(i));
     }
 
     @Override

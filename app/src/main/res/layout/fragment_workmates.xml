@@ -2,13 +2,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.corroy.mathieu.go4lunch.Fragments.Workmates">
+    tools:context="com.corroy.mathieu.go4lunch.Fragments.WorkmatesFragment">
 
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/fragment_workmates_recyclerview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="10dp">
-    </android.support.v7.widget.RecyclerView>
+    </androidx.recyclerview.widget.RecyclerView>
 
 </LinearLayout>

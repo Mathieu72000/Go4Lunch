@@ -1,20 +1,17 @@
 package com.corroy.mathieu.go4lunch.Views;
 
 import android.content.Context;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.RecyclerView;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
-import com.bumptech.glide.RequestManager;
+import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.corroy.mathieu.go4lunch.Models.Location;
-import com.corroy.mathieu.go4lunch.Models.Metrix.Row;
 import com.corroy.mathieu.go4lunch.Models.Result;
 import com.corroy.mathieu.go4lunch.R;
-import java.util.ArrayList;
-import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -33,17 +30,14 @@ public class ListViewHolder extends RecyclerView.ViewHolder {
     @BindView(R.id.item_ratingBar)
     RatingBar restaurantRatingBar;
 
-    List<Row> listMatrix;
     private float[] distanceResults = new float[3];
-
 
     public ListViewHolder(View itemView) {
         super(itemView);
         ButterKnife.bind(this, itemView);
-        listMatrix = new ArrayList<>();
     }
 
-    public void updateWithGoogle(Result result, Context context, RequestManager glide, String userLocation){
+    public void updateWithGoogle(Result result, Context context, String userLocation){
 
         // ------------- NAME ------------
         this.restaurantName.setText(result.getName());
@@ -56,13 +50,13 @@ public class ListViewHolder extends RecyclerView.ViewHolder {
         String distance = Integer.toString(Math.round(distanceResults[0]));
         this.restaurantDistance.setText(itemView.getResources().getString(R.string.list_unit_distance, distance));
         // ---------- Opening -------------
-        if( result.getOpeningHours() != null){
-            if(result.getOpeningHours().getOpenNow() != null){
-                if(result.getOpeningHours().getOpenNow()){
-                    restaurantOpenClose.setText("Open");
+        if( result.getOpeningHours() != null) {
+            if (result.getOpeningHours().getOpenNow() != null) {
+                if (result.getOpeningHours().getOpenNow()) {
+                    restaurantOpenClose.setText(R.string.open);
                     restaurantOpenClose.setTextColor(ContextCompat.getColor(context, R.color.quantum_lightgreen));
                 } else {
-                    restaurantOpenClose.setText("Closed");
+                    restaurantOpenClose.setText(R.string.close);
                     restaurantOpenClose.setTextColor(ContextCompat.getColor(context, R.color.google_button));
                 }
             }
@@ -70,10 +64,15 @@ public class ListViewHolder extends RecyclerView.ViewHolder {
         // -------------- PICTURE ------------------
         if (!(result.getPhotos() == null)){
             if (!(result.getPhotos().isEmpty())){
-                glide.load("https://maps.googleapis.com/maps/api/place/photo"+"?maxwidth="+75+"&maxheight="+75+"&photoreference="+result.getPhotos().get(0).getPhotoReference()+"&key=AIzaSyDXI74hOiHLi4l2vhUEs23260f055xyXvI").into(restaurantPicture);
+                Glide.with(itemView)
+                        .load("https://maps.googleapis.com/maps/api/place/photo"+"?maxwidth="+75+"&maxheight="+75+"&photoreference="+result.getPhotos().get(0).getPhotoReference()+"&key=AIzaSyDXI74hOiHLi4l2vhUEs23260f055xyXvI")
+                        .into(restaurantPicture);
             }
         }else{
-            glide.load(R.drawable.nopicture).apply(RequestOptions.centerCropTransform()).into(restaurantPicture);
+            Glide.with(itemView)
+                    .load(R.drawable.nopicture)
+                    .apply(RequestOptions.centerCropTransform())
+                    .into(restaurantPicture);
         }
     }
 

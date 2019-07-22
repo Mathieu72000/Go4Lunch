@@ -1,48 +1,36 @@
-package com.corroy.mathieu.go4lunch;
+package com.corroy.mathieu.go4lunch.Controller;
 
 import android.content.Intent;
 import android.net.Uri;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.bumptech.glide.Glide;
 import com.corroy.mathieu.go4lunch.Models.Details;
+import com.corroy.mathieu.go4lunch.Models.RestaurantHelper;
 import com.corroy.mathieu.go4lunch.Models.Result;
 import com.corroy.mathieu.go4lunch.Models.User;
 import com.corroy.mathieu.go4lunch.Models.UserHelper;
+import com.corroy.mathieu.go4lunch.R;
 import com.corroy.mathieu.go4lunch.Utils.Go4LunchStreams;
 import com.corroy.mathieu.go4lunch.Views.WorkmatesAdapter;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
-
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.observers.DisposableObserver;
 
-public class RestaurantActivity extends AppCompatActivity {
+public class RestaurantActivity extends BaseActivity implements View.OnClickListener {
 
     @BindView(R.id.activity_restaurant_restaurant_picture)
     ImageView restaurantImageView;
@@ -59,33 +47,40 @@ public class RestaurantActivity extends AppCompatActivity {
     private Disposable disposable;
     private String placeId;
     private String picture;
+    private String getId = "ID";
+    private String getPicture = "PICTURE";
     private List<Result> resultList;
     private List<User> userList;
     private Result result;
     private WorkmatesAdapter workmatesAdapter;
     private String COLLECTION_NAME = "users";
+    private String pictureURL = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=200&maxheight=150&key=AIzaSyDXI74hOiHLi4l2vhUEs23260f055xyXvI&photoreference=";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_restaurant);
         ButterKnife.bind(this);
 
-        Intent intent = getIntent();
-        placeId = intent.getStringExtra("ID");
-        picture = intent.getStringExtra("PICTURE");
+        placeId = getIntent().getStringExtra(getId);
+        picture = getIntent().getStringExtra(getPicture);
 
         resultList = new ArrayList<>();
 
         this.configureRecyclerView();
         this.executeHttpRequestWithRetrofit();
         this.executeFirebaseRequest();
+        this.configureButtonClickListener();
+    }
+
+    @Override
+    public int getFragmentLayout() {
+        return R.layout.activity_restaurant;
     }
 
     // Configure the recyclerView and glue it with the adapter
     public void configureRecyclerView(){
         this.userList = new ArrayList<>();
-        this.workmatesAdapter = new WorkmatesAdapter(userList, Glide.with(this));
+        this.workmatesAdapter = new WorkmatesAdapter(userList);
         this.recyclerView.setAdapter(this.workmatesAdapter);
         this.recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
@@ -158,29 +153,73 @@ public class RestaurantActivity extends AppCompatActivity {
         // Get the restaurant picture
         if (picture != null){
             Glide.with(this)
-                    .load("https://maps.googleapis.com/maps/api/place/photo?maxwidth=200&maxheight=150&key=AIzaSyApi61iqZP6ZR-mGkYvZkTSLH7OskLQJj0&photoreference=" + picture)
+                    .load(pictureURL + picture)
                     .into(restaurantImageView);
         }
     }
     @OnClick(R.id.activity_restaurant_button_call)
     public void onClickCall(){
-        Intent callIntent = new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", result.getFormattedPhoneNumber(), null));
-        startActivity(callIntent);
+        if(result.getFormattedPhoneNumber() != null) {
+            Intent callIntent = new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", result.getFormattedPhoneNumber(), null));
+            startActivity(callIntent);
+        } else {
+            Toast.makeText(this, getResources().getString(R.string.phone_unavailable), Toast.LENGTH_SHORT).show();
+            }
     }
 
     // Display the restaurant website when the user click on the button
     @OnClick(R.id.activity_restaurant_button_website)
-    public void onClickWeb(){
-        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(result.getWebsite()));
-        startActivity(browserIntent);
+    public void onClickWeb() {
+        if (result.getWebsite() != null) {
+            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(result.getWebsite()));
+            startActivity(browserIntent);
+        } else {
+            Toast.makeText(this, getResources().getString(R.string.website_unavailable), Toast.LENGTH_SHORT).show();
+        }
+    }
+    
+    private void likeTheRestaurant(){
+        if(getCurrentUser() != null) {
+            RestaurantHelper.createLike(result.getPlaceId(), getCurrentUser().getUid()).addOnCompleteListener(task -> {
+               if(task.isSuccessful()){
+                   Toast.makeText(this, getResources().getString(R.string.like_restaurant), Toast.LENGTH_SHORT).show();
+                   likeBtn.setText(getResources().getString(R.string.UNLIKE));
+               }
+            });
+        }else{
+            Toast.makeText(this, getResources().getString(R.string.error_restaurant), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void dislikeThisRestaurant(){
+        if(getCurrentUser() != null){
+            RestaurantHelper.deleteLike(result.getPlaceId(), getCurrentUser().getUid());
+            likeBtn.setText(getResources().getString(R.string.LIKE));
+            Toast.makeText(this, getResources().getString(R.string.dislike_restaurant), Toast.LENGTH_SHORT).show();
+        }else{
+            Toast.makeText(this, getResources().getString(R.string.error_restaurant), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void onClick(View v){
+        switch(v.getId()){
+            case R.id.activity_restaurant_button_like:
+                if(likeBtn.getText().equals(getResources().getString(R.string.LIKE))){
+                    this.likeTheRestaurant();
+                }else{
+                    this.dislikeThisRestaurant();
+                }
+                break;
+        }
+    }
+
+    private void configureButtonClickListener(){
+        likeBtn.setOnClickListener(this);
     }
 
     // Dispose subscription
     private void disposeWhenDestroy(){
         if (this.disposable != null && !this.disposable.isDisposed()) this.disposable.dispose();
     }
-
-    @Nullable
-    protected FirebaseUser getCurrentUser(){ return FirebaseAuth.getInstance().getCurrentUser(); }
-
 }

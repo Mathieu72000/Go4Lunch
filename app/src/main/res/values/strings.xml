@@ -28,5 +28,20 @@
     <string name="title_activity_maps" translatable="false">Map</string>
 
     <string name="list_unit_distance" translatable="false">%1$sm</string>
-
+    <string name="open">Open</string>
+    <string name="close">Close</string>
+    <string name="website">WEBSITE</string>
+    <string name="LIKE">LIKE</string>
+    <string name="call">CALL</string>
+    <string name="UNLIKE">UNLIKE</string>
+    <string name="like_restaurant">You like this restaurant !</string>
+    <string name="dislike_restaurant">You dislike this restaurant !</string>
+    <string name="error_restaurant">An error has occurred, please try again later.</string>
+    <string name="website_unavailable">No website available.</string>
+    <string name="phone_unavailable">No phone number available.</string>
+    <string name="connexion_success">Connexion success !</string>
+    <string name="authentication_canceled">Authentication canceled</string>
+    <string name="no_network">No network</string>
+    <string name="error_during_creating">Error during creating new user</string>
+    <string name="location_permission">Please grant the location permission</string>
 </resources>

@@ -1,5 +1,8 @@
 package com.corroy.mathieu.go4lunch.Models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -46,9 +49,6 @@ public class Result {
     @SerializedName("scope")
     @Expose
     private String scope;
-    @SerializedName("alt_ids")
-    @Expose
-    private List<AltId> altIds = null;
     @SerializedName("reference")
     @Expose
     private String reference;
@@ -174,14 +174,6 @@ public class Result {
         this.scope = scope;
     }
 
-    public List<AltId> getAltIds() {
-        return altIds;
-    }
-
-    public void setAltIds(List<AltId> altIds) {
-        this.altIds = altIds;
-    }
-
     public String getReference() {
         return reference;
     }
@@ -205,5 +197,4 @@ public class Result {
     public void setVicinity(String vicinity) {
         this.vicinity = vicinity;
     }
-
 }

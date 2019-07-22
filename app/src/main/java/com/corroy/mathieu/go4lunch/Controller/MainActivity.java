@@ -1,22 +1,16 @@
-package com.corroy.mathieu.go4lunch;
+package com.corroy.mathieu.go4lunch.Controller;
 
 import android.Manifest;
 import android.content.Intent;
-import android.location.Location;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.Snackbar;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import android.widget.Toast;
-
 import com.corroy.mathieu.go4lunch.Models.UserHelper;
+import com.corroy.mathieu.go4lunch.R;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-
+import com.google.android.material.snackbar.Snackbar;
 import java.util.Arrays;
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -134,7 +128,7 @@ public class MainActivity extends BaseActivity {
             String uid = this.getCurrentUser().getUid();
 
             UserHelper.createUser(uid, username, email, urlPicture)
-                    .addOnFailureListener(e -> Toast.makeText(getApplicationContext(), "Error during creating new user", Toast.LENGTH_SHORT).show());
+                    .addOnFailureListener(e -> Toast.makeText(getApplicationContext(), getResources().getString(R.string.error_during_creating), Toast.LENGTH_SHORT).show());
         }
     }
 
@@ -145,21 +139,20 @@ public class MainActivity extends BaseActivity {
 
         if (requestCode == RC_SIGN_IN) {
             if (resultCode == RESULT_OK) { // SUCCESS
-                showSnackBar(this.coordinatorLayout, "Connexion Success !");
+                showSnackBar(this.coordinatorLayout, getResources().getString(R.string.connexion_success));
                 this.createUserFirestore();
                 this.startActivityIfLogged();
             } else { // ERRORS
                 if (response == null) {
-                    showSnackBar(this.coordinatorLayout, "Authentification Canceled");
+                    showSnackBar(this.coordinatorLayout, getResources().getString(R.string.authentication_canceled));
                 } else if (response.getError().getErrorCode() == ErrorCodes.NO_NETWORK) {
-                    showSnackBar(this.coordinatorLayout, "No Network");
+                    showSnackBar(this.coordinatorLayout, getResources().getString(R.string.no_network));
                 } else if (response.getError().getErrorCode() == ErrorCodes.UNKNOWN_ERROR) {
-                    showSnackBar(this.coordinatorLayout, "Unknown Error");
+                    showSnackBar(this.coordinatorLayout, getResources().getString(R.string.error_restaurant));
                 }
             }
         }
     }
-
 
     // -------------------
     // PERMISSIONS
@@ -179,7 +172,7 @@ public class MainActivity extends BaseActivity {
         if(EasyPermissions.hasPermissions(this, perms)) {
         }
         else {
-            EasyPermissions.requestPermissions(this, "Please grant the location permission", REQUEST_LOCATION_PERMISSION, perms);
+            EasyPermissions.requestPermissions(this, getResources().getString(R.string.location_permission), REQUEST_LOCATION_PERMISSION, perms);
         }
     }
 }

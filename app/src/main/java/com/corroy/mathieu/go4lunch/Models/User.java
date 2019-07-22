@@ -1,6 +1,8 @@
 package com.corroy.mathieu.go4lunch.Models;
 
-public class User {
+import java.io.Serializable;
+
+public class User implements Serializable {
 
     private String uid;
     private String username;

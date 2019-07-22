@@ -1,19 +1,13 @@
 package com.corroy.mathieu.go4lunch.Views;
 
-import android.graphics.drawable.Drawable;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import com.bumptech.glide.RequestManager;
-import com.bumptech.glide.load.DataSource;
-import com.bumptech.glide.load.engine.GlideException;
-import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.bumptech.glide.request.target.Target;
 import com.corroy.mathieu.go4lunch.Models.User;
 import com.corroy.mathieu.go4lunch.R;
 import com.google.firebase.auth.FirebaseAuth;
@@ -34,31 +28,12 @@ public class WorkmatesViewHolder extends RecyclerView.ViewHolder {
     }
 
     // Get the username and picture in firebase and display it
-    public void updateData(User user, RequestManager glide){
+    public void updateData(User user){
         if(user.getUsername().equals(getCurrentUser().getDisplayName())){
             name.setText(user.getUsername());
 
-            glide.load(user.getUrlPicture())
-                    .listener(new RequestListener<Drawable>() {
-                        @Override
-                        public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                            Log.e("Glide", "Load failed", e);
-
-                            assert  e != null;
-                            for(Throwable t : e.getRootCauses()){
-                                Log.e("Glide", "Caused by : ", t);
-                            }
-
-                            e.logRootCauses("Glide");
-                            return false;
-                        }
-
-                        @Override
-                        public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                            Log.e("Glide", "Load success");
-                            return false;
-                        }
-                    })
+            Glide.with(itemView)
+                    .load(user.getUrlPicture())
                     .apply(RequestOptions.circleCropTransform())
                     .into(picture);
         }

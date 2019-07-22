@@ -1,16 +1,13 @@
-package com.corroy.mathieu.go4lunch;
+package com.corroy.mathieu.go4lunch.Controller;
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.design.widget.BottomNavigationView;
-import android.support.design.widget.NavigationView;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.view.ViewPager;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.widget.Toolbar;
+import androidx.annotation.NonNull;
+import androidx.core.view.GravityCompat;
+import androidx.viewpager.widget.ViewPager;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.widget.Toolbar;
 import android.text.TextUtils;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -18,25 +15,22 @@ import android.widget.TextView;
 import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.corroy.mathieu.go4lunch.Models.Result;
 import com.corroy.mathieu.go4lunch.Models.User;
 import com.corroy.mathieu.go4lunch.Models.UserHelper;
+import com.corroy.mathieu.go4lunch.R;
 import com.corroy.mathieu.go4lunch.Views.PagerAdapter;
 import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentChange;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-
 import butterknife.BindView;
 
 
@@ -59,10 +53,9 @@ public class FirstScreenActivity extends BaseActivity implements NavigationView.
 
     // FOR DATA
     private static final int SIGN_OUT_TASK = 10;
-    private String COLLECTION_NAME = "users";
+    private static final String COLLECTION_NAME = "users";
 
     public static List<User> userList;
-    Result result;
 
     @Override
     public int getFragmentLayout() {
