@@ -47,22 +47,22 @@ public class RestaurantActivity extends BaseActivity implements View.OnClickList
     private Disposable disposable;
     private String placeId;
     private String picture;
-    private String getId = "ID";
-    private String getPicture = "PICTURE";
+    private static final String GET_ID = "ID";
+    private static final String GET_PICTURE = "PICTURE";
     private List<Result> resultList;
     private List<User> userList;
     private Result result;
     private WorkmatesAdapter workmatesAdapter;
-    private String COLLECTION_NAME = "users";
-    private String pictureURL = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=200&maxheight=150&key=AIzaSyDXI74hOiHLi4l2vhUEs23260f055xyXvI&photoreference=";
+    private static final String COLLECTION_NAME = "users";
+    private static final String PICTURE_URL = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=200&maxheight=150&key=AIzaSyDXI74hOiHLi4l2vhUEs23260f055xyXvI&photoreference=";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ButterKnife.bind(this);
 
-        placeId = getIntent().getStringExtra(getId);
-        picture = getIntent().getStringExtra(getPicture);
+        placeId = getIntent().getStringExtra(GET_ID);
+        picture = getIntent().getStringExtra(GET_PICTURE);
 
         resultList = new ArrayList<>();
 
@@ -93,7 +93,7 @@ public class RestaurantActivity extends BaseActivity implements View.OnClickList
 
     // Execute API request to get details of the restaurant
     private void executeHttpRequestWithRetrofit(){
-        this.disposable = Go4LunchStreams.streamFetchGoogleDetails(placeId).subscribeWith(new DisposableObserver<Details>() {
+        this.disposable = Go4LunchStreams.getInstance().streamFetchGoogleDetails(placeId).subscribeWith(new DisposableObserver<Details>() {
             @Override
             public void onNext(Details details) {
                 result = details.getResult();
@@ -153,7 +153,7 @@ public class RestaurantActivity extends BaseActivity implements View.OnClickList
         // Get the restaurant picture
         if (picture != null){
             Glide.with(this)
-                    .load(pictureURL + picture)
+                    .load(PICTURE_URL + picture)
                     .into(restaurantImageView);
         }
     }

@@ -20,19 +20,16 @@ import com.corroy.mathieu.go4lunch.Models.UserHelper;
 import com.corroy.mathieu.go4lunch.R;
 import com.corroy.mathieu.go4lunch.Views.PagerAdapter;
 import com.firebase.ui.auth.AuthUI;
-import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import butterknife.BindView;
-
 
 public class FirstScreenActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -47,9 +44,10 @@ public class FirstScreenActivity extends BaseActivity implements NavigationView.
     BottomNavigationView bottomNavigationView;
     @BindView(R.id.first_screen_navigation_view)
     NavigationView navigationView;
-    public ImageView profileImageView;
-    public TextView emailTextView;
-    public TextView nameTextView;
+    private ImageView profileImageView;
+    private TextView emailTextView;
+    private TextView nameTextView;
+    private LatLngBounds latLngBounds;
 
     // FOR DATA
     private static final int SIGN_OUT_TASK = 10;
@@ -188,9 +186,6 @@ public class FirstScreenActivity extends BaseActivity implements NavigationView.
                     "No Email Found" : this.getCurrentUser().getEmail();
             this.emailTextView.setText(email);
 
-//            String username = TextUtils.isEmpty(this.getCurrentUser().getDisplayName()) ?
-//                    "No Username Found" : this.getCurrentUser().getDisplayName();
-//            this.nameTextView.setText(username);
             UserHelper.getUser(this.getCurrentUser().getUid()).addOnSuccessListener(documentSnapshot -> {
                 User currentUser = documentSnapshot.toObject(User.class);
                 assert currentUser != null;
@@ -218,22 +213,16 @@ public class FirstScreenActivity extends BaseActivity implements NavigationView.
         FirebaseFirestore.getInstance()
                 .collection(COLLECTION_NAME)
                 .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if(task.isSuccessful()){
-                            List<DocumentSnapshot> myListOfDocument = task.getResult().getDocuments();
-                            for(DocumentSnapshot documentSnapshot : myListOfDocument){
-                                UserHelper.getUser(documentSnapshot.getId()).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                                    @Override
-                                    public void onSuccess(DocumentSnapshot documentSnapshot) {
-                                        User user = documentSnapshot.toObject(User.class);
-                                        if(!user.getUid().equals(getCurrentUser().getUid())){
-                                            userList.add(user);
-                                        }
-                                    }
-                                });
-                            }
+                .addOnCompleteListener(task -> {
+                    if(task.isSuccessful()){
+                        List<DocumentSnapshot> myListOfDocument = task.getResult().getDocuments();
+                        for(DocumentSnapshot documentSnapshot : myListOfDocument){
+                            UserHelper.getUser(documentSnapshot.getId()).addOnSuccessListener(documentSnapshot1 -> {
+                                User user = documentSnapshot1.toObject(User.class);
+                                if(!user.getUid().equals(getCurrentUser().getUid())){
+                                    userList.add(user);
+                                }
+                            });
                         }
                     }
                 });
@@ -250,5 +239,13 @@ public class FirstScreenActivity extends BaseActivity implements NavigationView.
                 finish();
             }
         };
+    }
+
+    public LatLngBounds getLatLngBounds() {
+        return latLngBounds;
+    }
+
+    public void setLatLngBounds(LatLngBounds latLngBounds) {
+        this.latLngBounds = latLngBounds;
     }
 }

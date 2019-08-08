@@ -1,8 +1,9 @@
 package com.corroy.mathieu.go4lunch.Models;
 
-import java.io.Serializable;
+import android.os.Parcel;
+import android.os.Parcelable;
 
-public class User implements Serializable {
+public class User implements Parcelable {
 
     private String uid;
     private String username;
@@ -21,6 +22,27 @@ public class User implements Serializable {
         this.urlPicture = urlPicture;
         this.restau = restau;
     }
+
+    protected User(Parcel in) {
+        uid = in.readString();
+        username = in.readString();
+        uemail = in.readString();
+        urlPicture = in.readString();
+        restau = in.readString();
+        actualRestau = in.readString();
+    }
+
+    public static final Creator<User> CREATOR = new Creator<User>() {
+        @Override
+        public User createFromParcel(Parcel in) {
+            return new User(in);
+        }
+
+        @Override
+        public User[] newArray(int size) {
+            return new User[size];
+        }
+    };
 
     // --- GETTERS ---
     public String getUid() {
@@ -70,5 +92,20 @@ public class User implements Serializable {
 
     public void setActualRestau(String actualRestau) {
         this.actualRestau = actualRestau;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(uid);
+        dest.writeString(username);
+        dest.writeString(uemail);
+        dest.writeString(urlPicture);
+        dest.writeString(restau);
+        dest.writeString(actualRestau);
     }
 }

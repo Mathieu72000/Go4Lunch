@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
+import com.corroy.mathieu.go4lunch.Controller.FirstScreenActivity;
 import com.corroy.mathieu.go4lunch.Controller.RestaurantActivity;
 import com.corroy.mathieu.go4lunch.Models.Google;
 import com.corroy.mathieu.go4lunch.Models.Result;
@@ -33,7 +34,7 @@ import java.util.List;
 import java.util.Objects;
 import io.reactivex.observers.DisposableObserver;
 
-public class MapViewFragment extends BaseFragment implements OnMapReadyCallback, GoogleMap.OnMyLocationClickListener, GoogleMap.OnMyLocationButtonClickListener, GoogleMap.OnMarkerClickListener {
+public class MapViewFragment extends BaseFragment implements OnMapReadyCallback, GoogleMap.OnMyLocationClickListener, GoogleMap.OnMyLocationButtonClickListener, GoogleMap.OnMarkerClickListener, GoogleMap.OnCameraIdleListener {
 
     private View mView;
     private SupportMapFragment mapFragment;
@@ -42,8 +43,6 @@ public class MapViewFragment extends BaseFragment implements OnMapReadyCallback,
     private GPSTracker mGPSTracker;
     private String position;
     private LatLng latLng;
-    private String placeId;
-    private String restaurant = "restaurant";
 
     public static MapViewFragment newInstance() {
         return new MapViewFragment();
@@ -75,7 +74,8 @@ public class MapViewFragment extends BaseFragment implements OnMapReadyCallback,
 
     // Create a new subscriber
     private void executeHttpRequestWithRetrofit() {
-        disposable = Go4LunchStreams.streamFetchGooglePlaces(position, 7000, restaurant).subscribeWith(new DisposableObserver<Google>() {
+        Go4LunchStreams.getInstance();
+        disposable = Go4LunchStreams.getInstance().streamFetchGooglePlaces(position, 7000, getRestaurant()).subscribeWith(new DisposableObserver<Google>() {
             @Override
             public void onNext(Google google) {
                 resultList.addAll(google.getResults());
@@ -105,6 +105,7 @@ public class MapViewFragment extends BaseFragment implements OnMapReadyCallback,
             mGoogleMap.setMyLocationEnabled(true);
             mGoogleMap.setOnMyLocationButtonClickListener(this);
             mGoogleMap.setOnMyLocationClickListener(this);
+            mGoogleMap.setOnCameraIdleListener(this);
         } else {
             // Show rationale and request permission
         }
@@ -114,7 +115,7 @@ public class MapViewFragment extends BaseFragment implements OnMapReadyCallback,
         CameraPosition cameraPosition = new CameraPosition.Builder().target(latLng).zoom(12).build();
         googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 
-//              Set the Location Button
+        //Set the Location Button
         View myLocationButton = ((View) mapFragment.getView().findViewById(Integer.parseInt("1")).getParent()).findViewById(Integer.parseInt("2"));
         RelativeLayout.LayoutParams rlp = (RelativeLayout.LayoutParams) myLocationButton.getLayoutParams();
         rlp.addRule(RelativeLayout.ALIGN_PARENT_TOP, 0);
@@ -127,9 +128,11 @@ public class MapViewFragment extends BaseFragment implements OnMapReadyCallback,
     // Handle the user click to change the marker color
     @Override
     public boolean onMarkerClick(Marker marker) {
-            placeId = marker.getTitle();
         Intent intent = new Intent(getContext(), RestaurantActivity.class);
-//        intent.putExtra(getId(), placeId);
+        Result tag = (Result) marker.getTag();
+        String picture = tag.getPhotos().get(0).getPhotoReference();
+        intent.putExtra(getSetId(), tag.getPlaceId());
+        intent.putExtra(getSetPicture(), picture);
         startActivity(intent);
             return false;
     }
@@ -159,5 +162,12 @@ public class MapViewFragment extends BaseFragment implements OnMapReadyCallback,
                     .icon(BitmapDescriptorFactory.fromBitmap(iconSize)));
             marker.setTag(mResult);
         }
+    }
+
+    // Call when the camera has ended
+    // Get the latLngBounds from the camera and set it into a FirstScreenActivity variable
+    @Override
+    public void onCameraIdle() {
+        ((FirstScreenActivity) getActivity()).setLatLngBounds(mGoogleMap.getProjection().getVisibleRegion().latLngBounds);
     }
 }

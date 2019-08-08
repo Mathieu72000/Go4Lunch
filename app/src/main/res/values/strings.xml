@@ -26,10 +26,9 @@
 
     <!-- GOOGLE MAP -->
     <string name="title_activity_maps" translatable="false">Map</string>
-
     <string name="list_unit_distance" translatable="false">%1$sm</string>
-    <string name="open">Open</string>
-    <string name="close">Close</string>
+    <string name="open">Open now</string>
+    <string name="close">Closed</string>
     <string name="website">WEBSITE</string>
     <string name="LIKE">LIKE</string>
     <string name="call">CALL</string>
@@ -44,4 +43,5 @@
     <string name="no_network">No network</string>
     <string name="error_during_creating">Error during creating new user</string>
     <string name="location_permission">Please grant the location permission</string>
+    <string name="time_unavailable">No schedule available</string>
 </resources>

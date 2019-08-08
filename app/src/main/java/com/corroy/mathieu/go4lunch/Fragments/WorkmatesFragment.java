@@ -27,7 +27,7 @@ public class WorkmatesFragment extends BaseFragment {
 
     private WorkmatesAdapter workmatesAdapter;
 
-    private String COLLECTION_NAME = "users";
+    private static final String COLLECTION_NAME = "users";
 
 
     public static WorkmatesFragment newInstance() {

@@ -12,6 +12,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.corroy.mathieu.go4lunch.Models.Location;
 import com.corroy.mathieu.go4lunch.Models.Result;
 import com.corroy.mathieu.go4lunch.R;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -60,7 +61,11 @@ public class ListViewHolder extends RecyclerView.ViewHolder {
                     restaurantOpenClose.setTextColor(ContextCompat.getColor(context, R.color.google_button));
                 }
             }
+        } else {
+            restaurantOpenClose.setText(context.getString(R.string.time_unavailable));
+            restaurantOpenClose.setTextColor(ContextCompat.getColor(context, R.color.colorBlack));
         }
+
         // -------------- PICTURE ------------------
         if (!(result.getPhotos() == null)){
             if (!(result.getPhotos().isEmpty())){
