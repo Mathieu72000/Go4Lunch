@@ -74,8 +74,7 @@ public class MapViewFragment extends BaseFragment implements OnMapReadyCallback,
 
     // Create a new subscriber
     private void executeHttpRequestWithRetrofit() {
-        Go4LunchStreams.getInstance();
-        disposable = Go4LunchStreams.getInstance().streamFetchGooglePlaces(position, 7000, getRestaurant()).subscribeWith(new DisposableObserver<Google>() {
+        disposable = Go4LunchStreams.getInstance().streamFetchGooglePlaces(position, 7000, RESTAURANT).subscribeWith(new DisposableObserver<Google>() {
             @Override
             public void onNext(Google google) {
                 resultList.addAll(google.getResults());
@@ -131,8 +130,8 @@ public class MapViewFragment extends BaseFragment implements OnMapReadyCallback,
         Intent intent = new Intent(getContext(), RestaurantActivity.class);
         Result tag = (Result) marker.getTag();
         String picture = tag.getPhotos().get(0).getPhotoReference();
-        intent.putExtra(getSetId(), tag.getPlaceId());
-        intent.putExtra(getSetPicture(), picture);
+        intent.putExtra(ID, tag.getPlaceId());
+        intent.putExtra(PICTURE, picture);
         startActivity(intent);
             return false;
     }

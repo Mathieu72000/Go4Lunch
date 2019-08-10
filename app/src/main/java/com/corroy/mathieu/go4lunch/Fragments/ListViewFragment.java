@@ -44,11 +44,9 @@ public class ListViewFragment extends BaseFragment {
     @BindView(R.id.listview_recyclerview)
     RecyclerView recyclerView;
 
-    private GPSTracker gpsTracker;
     private String position;
     private List<Result> resultList;
     private ListViewAdapter listViewAdapter;
-    private Toolbar toolbar;
     private AutoCompleteTextView autoCompleteTextView;
 
 
@@ -67,7 +65,7 @@ public class ListViewFragment extends BaseFragment {
         ButterKnife.bind(this, view);
 
         // LOCATION
-        gpsTracker = new GPSTracker(getContext());
+        GPSTracker gpsTracker = new GPSTracker(getContext());
         position = gpsTracker.getLatitude() + "," + gpsTracker.getLongitude();
 
         this.configureRecyclerView();
@@ -113,16 +111,16 @@ public class ListViewFragment extends BaseFragment {
                 .setOnItemClickListener((recyclerView, position, v) -> {
                     String placeId = resultList.get(position).getPlaceId();
                     Intent restaurantActivity = new Intent(getContext(), RestaurantActivity.class);
-                    restaurantActivity.putExtra(getSetId(), placeId);
+                    restaurantActivity.putExtra(ID, placeId);
                     if (resultList.get(position).getPhotos() != null) {
-                        restaurantActivity.putExtra(getSetPicture(), resultList.get(position).getPhotos().get(0).getPhotoReference());
+                        restaurantActivity.putExtra(PICTURE, resultList.get(position).getPhotos().get(0).getPhotoReference());
                     }
                     Objects.requireNonNull(getContext()).startActivity(restaurantActivity);
                 });
     }
 
     private void executeHttpRequestWithRetrofit() {
-        disposable = Go4LunchStreams.getInstance().streamFetchGooglePlaces(position, 7000, getRestaurant()).subscribeWith(new DisposableObserver<Google>() {
+        disposable = Go4LunchStreams.getInstance().streamFetchGooglePlaces(position, 7000, RESTAURANT).subscribeWith(new DisposableObserver<Google>() {
             @Override
             public void onNext(Google google) {
                 resultList.addAll(google.getResults());

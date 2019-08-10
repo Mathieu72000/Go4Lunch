@@ -52,8 +52,8 @@ public class ListViewHolder extends RecyclerView.ViewHolder {
         this.restaurantDistance.setText(itemView.getResources().getString(R.string.list_unit_distance, distance));
         // ---------- Opening -------------
         if( result.getOpeningHours() != null) {
-            if (result.getOpeningHours().getOpenNow() != null) {
-                if (result.getOpeningHours().getOpenNow()) {
+            if (result.getOpeningHours().openNow != null) {
+                if (result.getOpeningHours().openNow) {
                     restaurantOpenClose.setText(R.string.open);
                     restaurantOpenClose.setTextColor(ContextCompat.getColor(context, R.color.quantum_lightgreen));
                 } else {
