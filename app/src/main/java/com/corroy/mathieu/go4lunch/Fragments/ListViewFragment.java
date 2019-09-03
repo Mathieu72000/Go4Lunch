@@ -9,14 +9,16 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import com.corroy.mathieu.go4lunch.Controller.FirstScreenActivity;
-import com.corroy.mathieu.go4lunch.Models.Google;
-import com.corroy.mathieu.go4lunch.Models.Result;
+import com.corroy.mathieu.go4lunch.Models.NearbySearch.Google;
+import com.corroy.mathieu.go4lunch.Models.NearbySearch.NearbyResult;
 import com.corroy.mathieu.go4lunch.R;
 import com.corroy.mathieu.go4lunch.Controller.RestaurantActivity;
 import com.corroy.mathieu.go4lunch.Utils.GPSTracker;
@@ -45,10 +47,11 @@ public class ListViewFragment extends BaseFragment {
     RecyclerView recyclerView;
 
     private String position;
-    private List<Result> resultList;
+    private List<NearbyResult> nearbyResultList;
     private ListViewAdapter listViewAdapter;
+    private List<String> fullList;
     private AutoCompleteTextView autoCompleteTextView;
-
+    private ArrayAdapter<String> adapter;
 
     public static ListViewFragment newInstance() {
         return new ListViewFragment();
@@ -91,7 +94,27 @@ public class ListViewFragment extends BaseFragment {
 
             @Override
             public void afterTextChanged(Editable s) {
-                configureAutoPredictions(s);
+                if(s.length() > 0){
+                    configureAutoPredictions(s);
+                } else {
+                    listViewAdapter.refreshAdapter(nearbyResultList);
+                }
+
+            }
+        });
+
+        autoCompleteTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String item = adapter.getItem(position);
+                Log.i("ITEM", item);
+                List<NearbyResult> nearbyResultListFilter = new ArrayList<>();
+                for (NearbyResult nearbyResult : nearbyResultList) {
+                    if(nearbyResult.getName().equals(item)){
+                        nearbyResultListFilter.add(nearbyResult);
+                    }
+                }
+                listViewAdapter.refreshAdapter(nearbyResultListFilter);
             }
         });
 
@@ -99,8 +122,8 @@ public class ListViewFragment extends BaseFragment {
     }
 
     private void configureRecyclerView() {
-        this.resultList = new ArrayList<>();
-        this.listViewAdapter = new ListViewAdapter(getContext(), resultList, position);
+        this.nearbyResultList = new ArrayList<>();
+        this.listViewAdapter = new ListViewAdapter(getContext(), nearbyResultList, position);
         this.recyclerView.setAdapter(this.listViewAdapter);
         this.recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         this.recyclerView.addItemDecoration(new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL));
@@ -109,11 +132,11 @@ public class ListViewFragment extends BaseFragment {
     private void configureOnClickRecyclerView() {
         ItemClickSupport.addTo(recyclerView)
                 .setOnItemClickListener((recyclerView, position, v) -> {
-                    String placeId = resultList.get(position).getPlaceId();
+                    String placeId = listViewAdapter.getmResultList().get(position).getPlaceId();
                     Intent restaurantActivity = new Intent(getContext(), RestaurantActivity.class);
                     restaurantActivity.putExtra(ID, placeId);
-                    if (resultList.get(position).getPhotos() != null) {
-                        restaurantActivity.putExtra(PICTURE, resultList.get(position).getPhotos().get(0).getPhotoReference());
+                    if (listViewAdapter.getmResultList().get(position).getPhotos() != null) {
+                        restaurantActivity.putExtra(PICTURE, listViewAdapter.getmResultList().get(position).getPhotos().get(0).getPhotoReference());
                     }
                     Objects.requireNonNull(getContext()).startActivity(restaurantActivity);
                 });
@@ -123,7 +146,7 @@ public class ListViewFragment extends BaseFragment {
         disposable = Go4LunchStreams.getInstance().streamFetchGooglePlaces(position, 7000, RESTAURANT).subscribeWith(new DisposableObserver<Google>() {
             @Override
             public void onNext(Google google) {
-                resultList.addAll(google.getResults());
+                nearbyResultList.addAll(google.getResults());
             }
 
             @Override
@@ -132,7 +155,7 @@ public class ListViewFragment extends BaseFragment {
 
             @Override
             public void onComplete() {
-                listViewAdapter.notifyItemRangeChanged(0, resultList.size());
+                listViewAdapter.notifyItemRangeChanged(0, nearbyResultList.size());
 
             }
         });
@@ -155,12 +178,15 @@ public class ListViewFragment extends BaseFragment {
 
         placesClient.findAutocompletePredictions(request).addOnSuccessListener((response) -> {
             List<String> restaurantList = new ArrayList<>();
+
             for (AutocompletePrediction prediction : response.getAutocompletePredictions()) {
                 if (prediction.getPlaceTypes().contains(Place.Type.RESTAURANT)) {
+
                     restaurantList.add(prediction.getPrimaryText(null).toString());
+
                 }
             }
-            ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, restaurantList);
+            adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_dropdown_item_1line, restaurantList);
 
             autoCompleteTextView.setAdapter(adapter);
         });

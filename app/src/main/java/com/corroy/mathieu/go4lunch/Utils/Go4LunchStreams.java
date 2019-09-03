@@ -1,7 +1,10 @@
 package com.corroy.mathieu.go4lunch.Utils;
 
-import com.corroy.mathieu.go4lunch.Models.Details;
-import com.corroy.mathieu.go4lunch.Models.Google;
+import com.corroy.mathieu.go4lunch.Models.Details.Details;
+import com.corroy.mathieu.go4lunch.Models.Details.Result;
+import com.corroy.mathieu.go4lunch.Models.NearbySearch.Google;
+
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -33,8 +36,8 @@ public class Go4LunchStreams {
                 .timeout(500, TimeUnit.SECONDS);
     }
 
-    public Observable<Details> streamFetchGoogleDetails(String placeId) {
-        return go4LunchService.getGoogleDetails(placeId)
+    public Observable<Details> streamFetchGoogleDetailsInfo(String placeId) {
+        return go4LunchService.getGoogleDetailsInfo(placeId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .timeout(500, TimeUnit.SECONDS);

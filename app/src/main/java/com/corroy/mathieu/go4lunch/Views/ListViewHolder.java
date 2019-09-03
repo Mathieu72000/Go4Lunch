@@ -1,6 +1,5 @@
 package com.corroy.mathieu.go4lunch.Views;
 
-import android.content.Context;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
@@ -9,10 +8,9 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.corroy.mathieu.go4lunch.Models.Location;
-import com.corroy.mathieu.go4lunch.Models.Result;
+import com.corroy.mathieu.go4lunch.Models.NearbySearch.NearbyResult;
+import com.corroy.mathieu.go4lunch.Models.NearbySearch.Location;
 import com.corroy.mathieu.go4lunch.R;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -32,13 +30,14 @@ public class ListViewHolder extends RecyclerView.ViewHolder {
     RatingBar restaurantRatingBar;
 
     private float[] distanceResults = new float[3];
+    private boolean textOK = false;
 
     public ListViewHolder(View itemView) {
         super(itemView);
         ButterKnife.bind(this, itemView);
     }
 
-    public void updateWithGoogle(Result result, Context context, String userLocation){
+    public void updateWithGoogle(NearbyResult result, String userLocation){
 
         // ------------- NAME ------------
         this.restaurantName.setText(result.getName());
@@ -55,15 +54,15 @@ public class ListViewHolder extends RecyclerView.ViewHolder {
             if (result.getOpeningHours().openNow != null) {
                 if (result.getOpeningHours().openNow) {
                     restaurantOpenClose.setText(R.string.open);
-                    restaurantOpenClose.setTextColor(ContextCompat.getColor(context, R.color.quantum_lightgreen));
+                    restaurantOpenClose.setTextColor(ContextCompat.getColor(itemView.getContext(), R.color.quantum_lightgreen));
                 } else {
                     restaurantOpenClose.setText(R.string.close);
-                    restaurantOpenClose.setTextColor(ContextCompat.getColor(context, R.color.google_button));
+                    restaurantOpenClose.setTextColor(ContextCompat.getColor(itemView.getContext(), R.color.google_button));
                 }
             }
         } else {
-            restaurantOpenClose.setText(context.getString(R.string.time_unavailable));
-            restaurantOpenClose.setTextColor(ContextCompat.getColor(context, R.color.colorBlack));
+            restaurantOpenClose.setText(itemView.getContext().getString(R.string.time_unavailable));
+            restaurantOpenClose.setTextColor(ContextCompat.getColor(itemView.getContext(), R.color.colorBlack));
         }
 
         // -------------- PICTURE ------------------
@@ -81,7 +80,7 @@ public class ListViewHolder extends RecyclerView.ViewHolder {
         }
     }
 
-    private void displayRating(Result result){
+    private void displayRating(NearbyResult result){
         if(result.getRating() != null){
             double googleRating = result.getRating();
             double rating = googleRating /  5 * 3;

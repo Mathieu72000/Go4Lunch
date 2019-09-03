@@ -1,6 +1,7 @@
-package com.corroy.mathieu.go4lunch.Models;
+package com.corroy.mathieu.go4lunch.Models.Details;
 
 import java.util.List;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -11,7 +12,7 @@ public class Details {
     private List<Object> htmlAttributions = null;
     @SerializedName("result")
     @Expose
-    private Result result;
+    private Result result = null;
     @SerializedName("status")
     @Expose
     private String status;

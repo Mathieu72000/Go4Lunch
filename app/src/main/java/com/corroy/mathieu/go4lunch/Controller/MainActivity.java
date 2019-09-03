@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import android.widget.Toast;
-import com.corroy.mathieu.go4lunch.Models.UserHelper;
+import com.corroy.mathieu.go4lunch.Models.Helper.UserHelper;
 import com.corroy.mathieu.go4lunch.R;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;

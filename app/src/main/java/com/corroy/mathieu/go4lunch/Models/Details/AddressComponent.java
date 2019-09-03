@@ -1,4 +1,4 @@
-package com.corroy.mathieu.go4lunch.Models;
+package com.corroy.mathieu.go4lunch.Models.Details;
 
 import java.util.List;
 import com.google.gson.annotations.Expose;

@@ -6,20 +6,20 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Filter;
-import android.widget.Filterable;
-import com.corroy.mathieu.go4lunch.Models.Result;
+
+import com.corroy.mathieu.go4lunch.Models.Details.Result;
+import com.corroy.mathieu.go4lunch.Models.NearbySearch.NearbyResult;
 import com.corroy.mathieu.go4lunch.R;
-import java.util.ArrayList;
+
 import java.util.List;
 
 public class ListViewAdapter extends RecyclerView.Adapter<ListViewHolder> {
 
-    private List<Result> mResultList;
+    private List<NearbyResult> mResultList;
     private Context mContext;
     private String location;
 
-    public ListViewAdapter(Context context, List<Result> result, String location) {
+    public ListViewAdapter(Context context, List<NearbyResult> result, String location) {
         this.mContext = context;
         this.mResultList = result;
         this.location = location;
@@ -35,11 +35,20 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull ListViewHolder listViewViewHolder, int position) {
-        listViewViewHolder.updateWithGoogle(this.mResultList.get(position), mContext, location);
+        listViewViewHolder.updateWithGoogle(this.mResultList.get(position), location);
     }
 
     @Override
     public int getItemCount() {
         return this.mResultList.size();
+    }
+
+    public void refreshAdapter(List<NearbyResult> nearbyResults){
+        mResultList = nearbyResults;
+        notifyDataSetChanged();
+    }
+
+    public List<NearbyResult> getmResultList() {
+        return mResultList;
     }
 }

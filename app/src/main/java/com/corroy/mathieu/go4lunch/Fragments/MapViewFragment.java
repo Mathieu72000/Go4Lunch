@@ -15,8 +15,8 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import com.corroy.mathieu.go4lunch.Controller.FirstScreenActivity;
 import com.corroy.mathieu.go4lunch.Controller.RestaurantActivity;
-import com.corroy.mathieu.go4lunch.Models.Google;
-import com.corroy.mathieu.go4lunch.Models.Result;
+import com.corroy.mathieu.go4lunch.Models.NearbySearch.Google;
+import com.corroy.mathieu.go4lunch.Models.NearbySearch.NearbyResult;
 import com.corroy.mathieu.go4lunch.R;
 import com.corroy.mathieu.go4lunch.Utils.GPSTracker;
 import com.corroy.mathieu.go4lunch.Utils.Go4LunchStreams;
@@ -39,7 +39,7 @@ public class MapViewFragment extends BaseFragment implements OnMapReadyCallback,
     private View mView;
     private SupportMapFragment mapFragment;
     private GoogleMap mGoogleMap;
-    private List<Result> resultList;
+    private List<NearbyResult> resultList;
     private GPSTracker mGPSTracker;
     private String position;
     private LatLng latLng;
@@ -128,7 +128,7 @@ public class MapViewFragment extends BaseFragment implements OnMapReadyCallback,
     @Override
     public boolean onMarkerClick(Marker marker) {
         Intent intent = new Intent(getContext(), RestaurantActivity.class);
-        Result tag = (Result) marker.getTag();
+        NearbyResult tag = (NearbyResult) marker.getTag();
         String picture = tag.getPhotos().get(0).getPhotoReference();
         intent.putExtra(ID, tag.getPlaceId());
         intent.putExtra(PICTURE, picture);
@@ -153,7 +153,7 @@ public class MapViewFragment extends BaseFragment implements OnMapReadyCallback,
         BitmapDrawable bitmapDrawable = (BitmapDrawable)getResources().getDrawable(R.drawable.ic_restaurant_marker_orange);
         Bitmap bitmap = bitmapDrawable.getBitmap();
         Bitmap iconSize = Bitmap.createScaledBitmap(bitmap, width, height, false);
-        for(Result mResult : resultList){
+        for(NearbyResult mResult : resultList){
             LatLng restau = new LatLng(mResult.getGeometry().getLocation().getLat(), mResult.getGeometry().getLocation().getLng());
             Marker marker = mGoogleMap.addMarker(new MarkerOptions().position(restau)
                     .title(mResult.getName())

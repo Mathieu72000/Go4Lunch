@@ -1,4 +1,4 @@
-package com.corroy.mathieu.go4lunch.Models;
+package com.corroy.mathieu.go4lunch.Models.Helper;
 
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;

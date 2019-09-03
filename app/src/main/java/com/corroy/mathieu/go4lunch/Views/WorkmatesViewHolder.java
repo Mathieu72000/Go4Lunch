@@ -8,7 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.corroy.mathieu.go4lunch.Models.User;
+import com.corroy.mathieu.go4lunch.Models.Helper.User;
 import com.corroy.mathieu.go4lunch.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;

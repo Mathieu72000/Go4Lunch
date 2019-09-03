@@ -26,7 +26,6 @@
 
     <!-- GOOGLE MAP -->
     <string name="title_activity_maps" translatable="false">Map</string>
-    <string name="list_unit_distance" translatable="false">%1$sm</string>
     <string name="open">Open now</string>
     <string name="close">Closed</string>
     <string name="website">WEBSITE</string>
@@ -44,4 +43,9 @@
     <string name="error_during_creating">Error during creating new user</string>
     <string name="location_permission">Please grant the location permission</string>
     <string name="time_unavailable">No schedule available</string>
+    <string name="list_unit_distance">%1$sm</string>
+    <string name="restaurant_closed">Closed</string>
+    <string name="restaurant_opening_not_know">Opening hours are not known</string>
+    <string name="restaurant_open_until">Open until %1$s</string>
+    <string name="restaurant_closing_soon">Closing soon (%1$s)</string>
 </resources>

@@ -12,11 +12,11 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.bumptech.glide.Glide;
-import com.corroy.mathieu.go4lunch.Models.Details;
-import com.corroy.mathieu.go4lunch.Models.RestaurantHelper;
-import com.corroy.mathieu.go4lunch.Models.Result;
-import com.corroy.mathieu.go4lunch.Models.User;
-import com.corroy.mathieu.go4lunch.Models.UserHelper;
+import com.corroy.mathieu.go4lunch.Models.Details.Details;
+import com.corroy.mathieu.go4lunch.Models.Details.Result;
+import com.corroy.mathieu.go4lunch.Models.Helper.RestaurantHelper;
+import com.corroy.mathieu.go4lunch.Models.Helper.User;
+import com.corroy.mathieu.go4lunch.Models.Helper.UserHelper;
 import com.corroy.mathieu.go4lunch.R;
 import com.corroy.mathieu.go4lunch.Utils.Go4LunchStreams;
 import com.corroy.mathieu.go4lunch.Views.WorkmatesAdapter;
@@ -93,7 +93,7 @@ public class RestaurantActivity extends BaseActivity implements View.OnClickList
 
     // Execute API request to get details of the restaurant
     private void executeHttpRequestWithRetrofit(){
-        this.disposable = Go4LunchStreams.getInstance().streamFetchGoogleDetails(placeId).subscribeWith(new DisposableObserver<Details>() {
+        this.disposable = Go4LunchStreams.getInstance().streamFetchGoogleDetailsInfo(placeId).subscribeWith(new DisposableObserver<Details>() {
             @Override
             public void onNext(Details details) {
                 result = details.getResult();

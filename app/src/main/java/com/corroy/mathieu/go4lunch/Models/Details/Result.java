@@ -1,14 +1,10 @@
-package com.corroy.mathieu.go4lunch.Models;
-
-import android.os.Parcel;
-import android.os.Parcelable;
+package com.corroy.mathieu.go4lunch.Models.Details;
 
 import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 public class Result {
-
 
     @SerializedName("address_components")
     @Expose
@@ -22,11 +18,8 @@ public class Result {
     @SerializedName("formatted_phone_number")
     @Expose
     private String formattedPhoneNumber;
-    @SerializedName("rating")
-    @Expose
-    private Double rating;
-    @Expose
     @SerializedName("geometry")
+    @Expose
     private Geometry geometry;
     @SerializedName("icon")
     @Expose
@@ -34,33 +27,48 @@ public class Result {
     @SerializedName("id")
     @Expose
     private String id;
+    @SerializedName("international_phone_number")
+    @Expose
+    private String internationalPhoneNumber;
     @SerializedName("name")
     @Expose
     private String name;
-    @SerializedName("opening_hours")
-    @Expose
-    private OpeningHours openingHours;
-    @SerializedName("photos")
-    @Expose
-    private List<Photo> photos = null;
     @SerializedName("place_id")
     @Expose
     private String placeId;
-    @SerializedName("scope")
+    @SerializedName("rating")
     @Expose
-    private String scope;
+    private Double rating;
     @SerializedName("reference")
     @Expose
     private String reference;
     @SerializedName("types")
     @Expose
     private List<String> types = null;
+    @SerializedName("url")
+    @Expose
+    private String url;
+    @SerializedName("utc_offset")
+    @Expose
+    private Integer utcOffset;
+    @SerializedName("photos")
+    @Expose
+    private List<Photo> photos = null;
     @SerializedName("vicinity")
     @Expose
     private String vicinity;
+    @SerializedName("opening_hours")
+    @Expose
+    private OpeningHours openingHours = null;
     @SerializedName("website")
     @Expose
     private String website;
+
+    public  OpeningHours getOpeninghours() {return  openingHours;}
+
+    public void setOpeningHours(OpeningHours openingHours) {
+        this.openingHours = openingHours;
+    }
 
     public List<AddressComponent> getAddressComponents() {
         return addressComponents;
@@ -94,22 +102,6 @@ public class Result {
         this.formattedPhoneNumber = formattedPhoneNumber;
     }
 
-    public Double getRating() {
-        return rating;
-    }
-
-    public void setRating(Double rating) {
-        this.rating = rating;
-    }
-
-    public String getWebsite() {
-        return website;
-    }
-
-    public void setWebsite(String website) {
-        this.website = website;
-    }
-
     public Geometry getGeometry() {
         return geometry;
     }
@@ -134,28 +126,20 @@ public class Result {
         this.id = id;
     }
 
+    public String getInternationalPhoneNumber() {
+        return internationalPhoneNumber;
+    }
+
+    public void setInternationalPhoneNumber(String internationalPhoneNumber) {
+        this.internationalPhoneNumber = internationalPhoneNumber;
+    }
+
     public String getName() {
         return name;
     }
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public OpeningHours getOpeningHours() {
-        return openingHours;
-    }
-
-    public void setOpeningHours(OpeningHours openingHours) {
-        this.openingHours = openingHours;
-    }
-
-    public List<Photo> getPhotos() {
-        return photos;
-    }
-
-    public void setPhotos(List<Photo> photos) {
-        this.photos = photos;
     }
 
     public String getPlaceId() {
@@ -166,12 +150,12 @@ public class Result {
         this.placeId = placeId;
     }
 
-    public String getScope() {
-        return scope;
+    public Double getRating() {
+        return rating;
     }
 
-    public void setScope(String scope) {
-        this.scope = scope;
+    public void setRating(Double rating) {
+        this.rating = rating;
     }
 
     public String getReference() {
@@ -190,11 +174,47 @@ public class Result {
         this.types = types;
     }
 
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public Integer getUtcOffset() {
+        return utcOffset;
+    }
+
+    public void setUtcOffset(Integer utcOffset) {
+        this.utcOffset = utcOffset;
+    }
+
     public String getVicinity() {
         return vicinity;
     }
 
     public void setVicinity(String vicinity) {
         this.vicinity = vicinity;
+    }
+
+    public String getWebsite() {
+        return website;
+    }
+
+    public void setWebsite(String website) {
+        this.website = website;
+    }
+
+    public List<Photo> getPhotos() {
+        return photos;
+    }
+
+    public void setPhotos(List<Photo> photos) {
+        this.photos = photos;
+    }
+
+    public OpeningHours getOpeningHours() {
+        return openingHours;
     }
 }

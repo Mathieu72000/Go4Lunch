@@ -1,4 +1,4 @@
-package com.corroy.mathieu.go4lunch.Models;
+package com.corroy.mathieu.go4lunch.Models.Helper;
 
 import android.os.Parcel;
 import android.os.Parcelable;
