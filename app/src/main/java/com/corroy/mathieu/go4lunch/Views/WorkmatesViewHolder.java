@@ -26,7 +26,12 @@ public class WorkmatesViewHolder extends RecyclerView.ViewHolder {
 
     // Get the username and picture of the user in fireBase and display it
     public void updateData(User user){
-            name.setText(user.getUsername());
+        if(user.getJoinedRestaurant() != null) {
+            name.setText(itemView.getContext().getString(R.string.user_name, user.getUsername(), user.getJoinedRestaurant()));
+        } else {
+            // todo Mettre en italic
+            name.setText(itemView.getContext().getString(R.string.decided));
+        }
 
             Glide.with(itemView)
                     .load(user.getUrlPicture())

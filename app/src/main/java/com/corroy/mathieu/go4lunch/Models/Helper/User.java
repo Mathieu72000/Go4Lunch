@@ -49,6 +49,10 @@ public class User implements Parcelable {
 
     public String getUrlPicture() {return urlPicture; }
 
+    public String getJoinedRestaurant() {
+        return joinedRestaurant;
+    }
+
     // --- SETTERS ---
 
     public void setJoinedRestaurant(String joinedRestaurant) {

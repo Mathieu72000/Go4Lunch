@@ -48,4 +48,6 @@
     <string name="restaurant_opening_not_know">Opening hours are not known</string>
     <string name="restaurant_open_until">Open until %1$s</string>
     <string name="restaurant_closing_soon">Closing soon (%1$s)</string>
+    <string name="user_name">%1$s is eating at %2$s</string>
+    <string name="decided">Haven\'t decided yet</string>
 </resources>

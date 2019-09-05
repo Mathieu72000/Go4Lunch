@@ -51,9 +51,6 @@ public class FirstScreenActivity extends BaseActivity implements NavigationView.
 
     // FOR DATA
     private static final int SIGN_OUT_TASK = 10;
-    private static final String COLLECTION_NAME = "users";
-
-    public static List<User> userList;
 
     @Override
     public int getFragmentLayout() {
@@ -80,17 +77,6 @@ public class FirstScreenActivity extends BaseActivity implements NavigationView.
         this.updateUIWhenCreating();
 
         viewPager.setAdapter(new PagerAdapter(getSupportFragmentManager()));
-
-        this.executeFirebaseRequest();
-    }
-
-    // -------------------
-    // ACTIONS
-    // -------------------
-
-    public void onBackPressed() {
-        super.onBackPressed();
-        this.signOutUserFromFirebase();
     }
 
     // -------------------
@@ -208,26 +194,6 @@ public class FirstScreenActivity extends BaseActivity implements NavigationView.
                 .addOnSuccessListener(this, this.updateUIAfterRequestCompleted(SIGN_OUT_TASK));
     }
 
-    private void executeFirebaseRequest(){
-        userList = new ArrayList<>();
-        FirebaseFirestore.getInstance()
-                .collection(COLLECTION_NAME)
-                .get()
-                .addOnCompleteListener(task -> {
-                    if(task.isSuccessful()){
-                        List<DocumentSnapshot> myListOfDocument = task.getResult().getDocuments();
-                        for(DocumentSnapshot documentSnapshot : myListOfDocument){
-                            UserHelper.getUser(documentSnapshot.getId()).addOnSuccessListener(documentSnapshot1 -> {
-                                User user = documentSnapshot1.toObject(User.class);
-                                if(!user.getUid().equals(getCurrentUser().getUid())){
-                                    userList.add(user);
-                                }
-                            });
-                        }
-                    }
-                });
-    }
-
     // -------------
     // UI
     // -------------
@@ -236,6 +202,7 @@ public class FirstScreenActivity extends BaseActivity implements NavigationView.
     private OnSuccessListener<Void> updateUIAfterRequestCompleted(final int origin) {
         return aVoid -> {
             if (origin == SIGN_OUT_TASK) {
+                // todo Redémarrer MainActivity
                 finish();
             }
         };

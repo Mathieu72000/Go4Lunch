@@ -118,6 +118,7 @@ public class MainActivity extends BaseActivity {
     private void startActivityIfLogged(){
             Intent intent = new Intent(this, FirstScreenActivity.class);
             startActivity(intent);
+            finish();
     }
 
     private void createUserFirestore(){

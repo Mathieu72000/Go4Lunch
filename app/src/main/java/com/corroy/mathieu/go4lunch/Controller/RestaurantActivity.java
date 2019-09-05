@@ -67,7 +67,6 @@ public class RestaurantActivity extends BaseActivity {
 
         this.configureRecyclerView();
         this.executeHttpRequestWithRetrofit();
-        this.executeFirebaseRequest();
     }
 
     @Override
@@ -95,6 +94,7 @@ public class RestaurantActivity extends BaseActivity {
             @Override
             public void onNext(Details details) {
                 result = details.getResult();
+                executeFirebaseRequest();
             }
 
             @Override
@@ -139,6 +139,7 @@ public class RestaurantActivity extends BaseActivity {
     private void executeFirebaseRequest(){
         FirebaseFirestore.getInstance()
                 .collection(COLLECTION_NAME)
+                .whereEqualTo("joinedRestaurant", result.getName())
                 .get()
                 .addOnCompleteListener(task -> {
                     if(task.isSuccessful()){
@@ -162,9 +163,8 @@ public class RestaurantActivity extends BaseActivity {
 
     @OnClick(R.id.restaurant_activity_go_button)
     public void onClickFloatingButton(View v){
-
         if(v.getId() == R.id.restaurant_activity_go_button){
-            if(floatButton.getTag().equals("JOIN")){
+            if("JOIN".equals(floatButton.getTag())){
                 this.joinTheRestaurant();
             } else {
                 this.disjointTheRestaurant();
@@ -213,6 +213,7 @@ public class RestaurantActivity extends BaseActivity {
     @OnClick(R.id.activity_restaurant_button_like)
     public void onClickLike(View v){
         if (v.getId() == R.id.activity_restaurant_button_like) {
+            // todo Inverser le string et le button
             if (likeBtn.getText().equals(getResources().getString(R.string.LIKE))) {
                 this.likeTheRestaurant();
             } else {

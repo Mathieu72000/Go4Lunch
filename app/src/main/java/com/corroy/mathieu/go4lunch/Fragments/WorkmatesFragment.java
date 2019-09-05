@@ -49,7 +49,7 @@ public class WorkmatesFragment extends BaseFragment {
 
     public void configureRecyclerView(){
         this.userList = new ArrayList<>();
-        this.workmatesAdapter = new WorkmatesAdapter(FirstScreenActivity.userList);
+        this.workmatesAdapter = new WorkmatesAdapter(userList);
         this.recyclerView.setAdapter(this.workmatesAdapter);
         this.recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
     }

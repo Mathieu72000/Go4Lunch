@@ -33,4 +33,6 @@
     <string name="restaurant_opening_not_know">Horaires indisponible</string>
     <string name="restaurant_open_until">Ouvert jusqu\'a %1$s</string>
     <string name="restaurant_closing_soon">Ferme bientôt (%1$s)</string>
+    <string name="user_name">%1$s est en train de manger à %2$s</string>
+    <string name="decided">n\'a pas encore décidé</string>
 </resources>
