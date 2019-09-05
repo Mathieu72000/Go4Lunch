@@ -31,7 +31,7 @@ public class NearbyResult {
         private String placeId;
         @SerializedName("rating")
         @Expose
-        private Double rating;
+        private double rating;
         @SerializedName("reference")
         @Expose
         private String reference;
@@ -122,7 +122,7 @@ public class NearbyResult {
             this.vicinity = vicinity;
         }
 
-        public Double getRating() {
+        public double getRating() {
         return rating;
     }
 

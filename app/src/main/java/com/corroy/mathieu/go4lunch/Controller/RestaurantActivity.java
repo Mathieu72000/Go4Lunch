@@ -14,12 +14,12 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.corroy.mathieu.go4lunch.Models.Details.Details;
 import com.corroy.mathieu.go4lunch.Models.Details.Result;
-import com.corroy.mathieu.go4lunch.Models.Helper.RestaurantHelper;
 import com.corroy.mathieu.go4lunch.Models.Helper.User;
 import com.corroy.mathieu.go4lunch.Models.Helper.UserHelper;
 import com.corroy.mathieu.go4lunch.R;
 import com.corroy.mathieu.go4lunch.Utils.Go4LunchStreams;
 import com.corroy.mathieu.go4lunch.Views.WorkmatesAdapter;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.ArrayList;
@@ -30,12 +30,12 @@ import butterknife.OnClick;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.observers.DisposableObserver;
 
-public class RestaurantActivity extends BaseActivity implements View.OnClickListener {
+public class RestaurantActivity extends BaseActivity {
 
     @BindView(R.id.activity_restaurant_restaurant_picture)
     ImageView restaurantImageView;
     @BindView(R.id.activity_restaurant_address)
-    TextView restaurantAdresse;
+    TextView restaurantAdress;
     @BindView(R.id.activity_restaurant_name)
     TextView restaurantName;
     @BindView(R.id.activity_restaurant_recycler)
@@ -44,12 +44,13 @@ public class RestaurantActivity extends BaseActivity implements View.OnClickList
     RatingBar ratingBar;
     @BindView(R.id.activity_restaurant_button_like)
     Button likeBtn;
+    @BindView(R.id.restaurant_activity_go_button)
+    FloatingActionButton floatButton;
     private Disposable disposable;
     private String placeId;
     private String picture;
     private static final String GET_ID = "ID";
     private static final String GET_PICTURE = "PICTURE";
-    private List<Result> resultList;
     private List<User> userList;
     private Result result;
     private WorkmatesAdapter workmatesAdapter;
@@ -64,12 +65,9 @@ public class RestaurantActivity extends BaseActivity implements View.OnClickList
         placeId = getIntent().getStringExtra(GET_ID);
         picture = getIntent().getStringExtra(GET_PICTURE);
 
-        resultList = new ArrayList<>();
-
         this.configureRecyclerView();
         this.executeHttpRequestWithRetrofit();
         this.executeFirebaseRequest();
-        this.configureButtonClickListener();
     }
 
     @Override
@@ -111,37 +109,16 @@ public class RestaurantActivity extends BaseActivity implements View.OnClickList
         });
     }
 
-    // Execute Firebase request to get the collection
-    private void executeFirebaseRequest(){
-        FirebaseFirestore.getInstance()
-                .collection(COLLECTION_NAME)
-                .get()
-                .addOnCompleteListener(task -> {
-                    if(task.isSuccessful()){
-                        List<DocumentSnapshot> myListOfDocuments = task.getResult().getDocuments();
-                        for(DocumentSnapshot documentSnapshot : myListOfDocuments){
-                            UserHelper.getUser(documentSnapshot.getId()).addOnSuccessListener(documentSnapshot1 -> {
-                                User user = documentSnapshot1.toObject(User.class);
-                                user.setActualRestau(result.getName());
-                                if(!user.getUid().equals(getCurrentUser().getUid())){
-                                    userList.add(user);}
-                                workmatesAdapter.notifyDataSetChanged();
-                            });
-                        }
-                    }
-                });
-    }
-
     private void updateUI(){
         // Get the restaurant name
         restaurantName.setText(result.getName());
 
         // Get the restaurant vicinity
         String vicinity = result.getTypes().get(0) + " - " + result.getVicinity();
-        restaurantAdresse.setText(vicinity);
+        restaurantAdress.setText(vicinity);
 
         // Get the restaurant rating
-        if(result.getRating() != null){
+        if(result.getRating() != 0){
             double googleRating = result.getRating();
             double rating = googleRating /  5 * 3;
             this.ratingBar.setRating((float)rating);
@@ -157,6 +134,61 @@ public class RestaurantActivity extends BaseActivity implements View.OnClickList
                     .into(restaurantImageView);
         }
     }
+
+    // Execute FireBase request to get the collection
+    private void executeFirebaseRequest(){
+        FirebaseFirestore.getInstance()
+                .collection(COLLECTION_NAME)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if(task.isSuccessful()){
+                        List<DocumentSnapshot> myListOfDocuments = task.getResult().getDocuments();
+                        for(DocumentSnapshot documentSnapshot : myListOfDocuments){
+                            UserHelper.getUser(documentSnapshot.getId()).addOnSuccessListener(documentSnapshot1 -> {
+                                User user = documentSnapshot1.toObject(User.class);
+                                user.setJoinedRestaurant(result.getName());
+                                if(!user.getUid().equals(getCurrentUser().getUid())){
+                                    userList.add(user);}
+                                workmatesAdapter.notifyDataSetChanged();
+                            });
+                        }
+                    }
+                });
+    }
+
+    // --------------
+    // BUTTONS
+    // --------------
+
+    @OnClick(R.id.restaurant_activity_go_button)
+    public void onClickFloatingButton(View v){
+
+        if(v.getId() == R.id.restaurant_activity_go_button){
+            if(floatButton.getTag().equals("JOIN")){
+                this.joinTheRestaurant();
+            } else {
+                this.disjointTheRestaurant();
+            }
+        }
+    }
+
+    public void joinTheRestaurant(){
+        UserHelper.updateUserRestaurant(getCurrentUser().getUid(), result.getName());
+        floatButton.setImageDrawable(getResources().getDrawable(R.drawable.validate));
+        floatButton.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+        floatButton.setColorFilter(getResources().getColor(R.color.colorTransparent));
+        Toast.makeText(this, "You joined this restaurant !", Toast.LENGTH_SHORT).show();
+        floatButton.setTag("DISJOINT");
+    }
+
+    public void disjointTheRestaurant(){
+        UserHelper.deleteUserRestaurant(getCurrentUser().getUid());
+        floatButton.setImageDrawable(getResources().getDrawable(R.drawable.pic_logo_go4lunch_512x512));
+        floatButton.setColorFilter(getResources().getColor(R.color.toolbar_darker));
+        Toast.makeText(this, "You disjoint this restaurant !", Toast.LENGTH_SHORT).show();
+        floatButton.setTag("JOIN");
+    }
+
     @OnClick(R.id.activity_restaurant_button_call)
     public void onClickCall(){
         if(result.getFormattedPhoneNumber() != null) {
@@ -177,10 +209,21 @@ public class RestaurantActivity extends BaseActivity implements View.OnClickList
             Toast.makeText(this, getResources().getString(R.string.website_unavailable), Toast.LENGTH_SHORT).show();
         }
     }
-    
+
+    @OnClick(R.id.activity_restaurant_button_like)
+    public void onClickLike(View v){
+        if (v.getId() == R.id.activity_restaurant_button_like) {
+            if (likeBtn.getText().equals(getResources().getString(R.string.LIKE))) {
+                this.likeTheRestaurant();
+            } else {
+                this.dislikeThisRestaurant();
+            }
+        }
+    }
+
     private void likeTheRestaurant(){
         if(getCurrentUser() != null) {
-            RestaurantHelper.createLike(result.getPlaceId(), getCurrentUser().getUid()).addOnCompleteListener(task -> {
+            UserHelper.createLike(result.getPlaceId(), getCurrentUser().getUid()).addOnCompleteListener(task -> {
                if(task.isSuccessful()){
                    Toast.makeText(this, getResources().getString(R.string.like_restaurant), Toast.LENGTH_SHORT).show();
                    likeBtn.setText(getResources().getString(R.string.UNLIKE));
@@ -193,29 +236,12 @@ public class RestaurantActivity extends BaseActivity implements View.OnClickList
 
     private void dislikeThisRestaurant(){
         if(getCurrentUser() != null){
-            RestaurantHelper.deleteLike(result.getPlaceId(), getCurrentUser().getUid());
+            UserHelper.deleteLike(result.getPlaceId(), getCurrentUser().getUid());
             likeBtn.setText(getResources().getString(R.string.LIKE));
             Toast.makeText(this, getResources().getString(R.string.dislike_restaurant), Toast.LENGTH_SHORT).show();
         }else{
             Toast.makeText(this, getResources().getString(R.string.error_restaurant), Toast.LENGTH_SHORT).show();
         }
-    }
-
-    @Override
-    public void onClick(View v){
-        switch(v.getId()){
-            case R.id.activity_restaurant_button_like:
-                if(likeBtn.getText().equals(getResources().getString(R.string.LIKE))){
-                    this.likeTheRestaurant();
-                }else{
-                    this.dislikeThisRestaurant();
-                }
-                break;
-        }
-    }
-
-    private void configureButtonClickListener(){
-        likeBtn.setOnClickListener(this);
     }
 
     // Dispose subscription

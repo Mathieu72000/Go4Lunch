@@ -24,11 +24,8 @@ public class WorkmatesFragment extends BaseFragment {
     RecyclerView recyclerView;
 
     private List<User> userList;
-
     private WorkmatesAdapter workmatesAdapter;
-
     private static final String COLLECTION_NAME = "users";
-
 
     public static WorkmatesFragment newInstance() {
       return  new WorkmatesFragment();

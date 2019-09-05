@@ -38,7 +38,7 @@ public class Result {
     private String placeId;
     @SerializedName("rating")
     @Expose
-    private Double rating;
+    private double rating;
     @SerializedName("reference")
     @Expose
     private String reference;
@@ -50,7 +50,7 @@ public class Result {
     private String url;
     @SerializedName("utc_offset")
     @Expose
-    private Integer utcOffset;
+    private int utcOffset;
     @SerializedName("photos")
     @Expose
     private List<Photo> photos = null;
@@ -150,11 +150,11 @@ public class Result {
         this.placeId = placeId;
     }
 
-    public Double getRating() {
+    public double getRating() {
         return rating;
     }
 
-    public void setRating(Double rating) {
+    public void setRating(double rating) {
         this.rating = rating;
     }
 
@@ -182,11 +182,11 @@ public class Result {
         this.url = url;
     }
 
-    public Integer getUtcOffset() {
+    public int getUtcOffset() {
         return utcOffset;
     }
 
-    public void setUtcOffset(Integer utcOffset) {
+    public void setUtcOffset(int utcOffset) {
         this.utcOffset = utcOffset;
     }
 

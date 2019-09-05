@@ -7,29 +7,22 @@ public class User implements Parcelable {
 
     private String uid;
     private String username;
-    private String uemail;
     private String urlPicture;
-    private String restau;
-    private String actualRestau;
+    private String joinedRestaurant;
 
-    public User() {
-    }
+    public User(){}
 
-    public User(String uid, String username, String uemail, String urlPicture, String restau) {
+    User(String uid, String username, String urlPicture) {
         this.uid = uid;
         this.username = username;
-        this.uemail = uemail;
         this.urlPicture = urlPicture;
-        this.restau = restau;
     }
 
-    protected User(Parcel in) {
+    private User(Parcel in) {
         uid = in.readString();
         username = in.readString();
-        uemail = in.readString();
         urlPicture = in.readString();
-        restau = in.readString();
-        actualRestau = in.readString();
+        joinedRestaurant = in.readString();
     }
 
     public static final Creator<User> CREATOR = new Creator<User>() {
@@ -45,6 +38,7 @@ public class User implements Parcelable {
     };
 
     // --- GETTERS ---
+
     public String getUid() {
         return uid;
     }
@@ -53,46 +47,15 @@ public class User implements Parcelable {
         return username;
     }
 
-    public String getUemail() {
-        return uemail;
-    }
-
-    public String getUrlPicture() {
-        return urlPicture;
-    }
-
-    public String getRestau() {
-        return restau;
-    }
-
-    public String getActualRestau() {
-        return actualRestau;
-    }
+    public String getUrlPicture() {return urlPicture; }
 
     // --- SETTERS ---
-    public void setUsername(String username) {
-        this.username = username;
+
+    public void setJoinedRestaurant(String joinedRestaurant) {
+        this.joinedRestaurant = joinedRestaurant;
     }
 
-    public void setUid(String uid) {
-        this.uid = uid;
-    }
-
-    public void setUemail(String uemail) {
-        this.uemail = uemail;
-    }
-
-    public void setUrlPicture(String urlPicture) {
-        this.urlPicture = urlPicture;
-    }
-
-    public void setRestau(String restau) {
-        this.restau = restau;
-    }
-
-    public void setActualRestau(String actualRestau) {
-        this.actualRestau = actualRestau;
-    }
+    // ------------------------------------------------
 
     @Override
     public int describeContents() {
@@ -103,9 +66,7 @@ public class User implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(uid);
         dest.writeString(username);
-        dest.writeString(uemail);
         dest.writeString(urlPicture);
-        dest.writeString(restau);
-        dest.writeString(actualRestau);
+        dest.writeString(joinedRestaurant);
     }
 }

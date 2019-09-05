@@ -124,10 +124,9 @@ public class MainActivity extends BaseActivity {
         if(this.getCurrentUser() != null){
             String urlPicture = (this.getCurrentUser().getPhotoUrl() != null) ? this.getCurrentUser().getPhotoUrl().toString() : null;
             String username = this.getCurrentUser().getDisplayName();
-            String email = this.getCurrentUser().getEmail();
             String uid = this.getCurrentUser().getUid();
 
-            UserHelper.createUser(uid, username, email, urlPicture)
+            UserHelper.createUser(uid, username, urlPicture)
                     .addOnFailureListener(e -> Toast.makeText(getApplicationContext(), getResources().getString(R.string.error_during_creating), Toast.LENGTH_SHORT).show());
         }
     }

@@ -51,14 +51,12 @@ public class ListViewHolder extends RecyclerView.ViewHolder {
         this.restaurantDistance.setText(itemView.getResources().getString(R.string.list_unit_distance, distance));
         // ---------- Opening -------------
         if( result.getOpeningHours() != null) {
-            if (result.getOpeningHours().openNow != null) {
-                if (result.getOpeningHours().openNow) {
+            if (result.getOpeningHours().getOpenNow()) {
                     restaurantOpenClose.setText(R.string.open);
                     restaurantOpenClose.setTextColor(ContextCompat.getColor(itemView.getContext(), R.color.quantum_lightgreen));
                 } else {
                     restaurantOpenClose.setText(R.string.close);
                     restaurantOpenClose.setTextColor(ContextCompat.getColor(itemView.getContext(), R.color.google_button));
-                }
             }
         } else {
             restaurantOpenClose.setText(itemView.getContext().getString(R.string.time_unavailable));
@@ -81,7 +79,7 @@ public class ListViewHolder extends RecyclerView.ViewHolder {
     }
 
     private void displayRating(NearbyResult result){
-        if(result.getRating() != null){
+        if(result.getRating() != 0){
             double googleRating = result.getRating();
             double rating = googleRating /  5 * 3;
             this.restaurantRatingBar.setRating((float)rating);

@@ -1,7 +1,6 @@
 package com.corroy.mathieu.go4lunch.Views;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
@@ -10,8 +9,6 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.corroy.mathieu.go4lunch.Models.Helper.User;
 import com.corroy.mathieu.go4lunch.R;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -27,9 +24,8 @@ public class WorkmatesViewHolder extends RecyclerView.ViewHolder {
         ButterKnife.bind(this, itemView);
     }
 
-    // Get the username and picture in firebase and display it
+    // Get the username and picture of the user in fireBase and display it
     public void updateData(User user){
-        if(user.getUsername().equals(getCurrentUser().getDisplayName())){
             name.setText(user.getUsername());
 
             Glide.with(itemView)
@@ -37,7 +33,4 @@ public class WorkmatesViewHolder extends RecyclerView.ViewHolder {
                     .apply(RequestOptions.circleCropTransform())
                     .into(picture);
         }
-    }
-    @Nullable
-    protected FirebaseUser getCurrentUser(){ return FirebaseAuth.getInstance().getCurrentUser(); }
 }

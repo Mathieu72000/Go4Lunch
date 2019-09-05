@@ -6,16 +6,16 @@ import com.google.gson.annotations.SerializedName;
 public class Close {
     @SerializedName("day")
     @Expose
-    public Integer day;
+    private int day;
     @SerializedName("time")
     @Expose
-    public String time;
+    private String time;
 
-    public Integer getDay() {
+    public int getDay() {
         return day;
     }
 
-    public void setDay(Integer day) {
+    public void setDay(int day) {
         this.day = day;
     }
 
