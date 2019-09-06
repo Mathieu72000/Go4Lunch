@@ -9,9 +9,14 @@ import android.location.Location;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
+
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.RelativeLayout;
 import com.corroy.mathieu.go4lunch.Controller.FirstScreenActivity;
 import com.corroy.mathieu.go4lunch.Controller.RestaurantActivity;
@@ -27,8 +32,18 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.model.AutocompletePrediction;
+import com.google.android.libraries.places.api.model.AutocompleteSessionToken;
+import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.api.model.RectangularBounds;
+import com.google.android.libraries.places.api.model.TypeFilter;
+import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest;
+import com.google.android.libraries.places.api.net.PlacesClient;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -36,13 +51,11 @@ import io.reactivex.observers.DisposableObserver;
 
 public class MapViewFragment extends BaseFragment implements OnMapReadyCallback, GoogleMap.OnMyLocationClickListener, GoogleMap.OnMyLocationButtonClickListener, GoogleMap.OnMarkerClickListener, GoogleMap.OnCameraIdleListener {
 
-    private View mView;
     private SupportMapFragment mapFragment;
     private GoogleMap mGoogleMap;
-    private List<NearbyResult> resultList;
+    private List<NearbyResult> nearbyResultList;
     private GPSTracker mGPSTracker;
     private String position;
-    private LatLng latLng;
 
     public static MapViewFragment newInstance() {
         return new MapViewFragment();
@@ -55,7 +68,7 @@ public class MapViewFragment extends BaseFragment implements OnMapReadyCallback,
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        mView = inflater.inflate(R.layout.fragment_map_view, container, false);
+        View mView = inflater.inflate(R.layout.fragment_map_view, container, false);
 
         mGPSTracker = new GPSTracker(getContext());
 
@@ -63,7 +76,7 @@ public class MapViewFragment extends BaseFragment implements OnMapReadyCallback,
         assert mapFragment != null;
         mapFragment.getMapAsync(this);
 
-        resultList = new ArrayList<>();
+        nearbyResultList = new ArrayList<>();
 
         return mView;
     }
@@ -77,7 +90,7 @@ public class MapViewFragment extends BaseFragment implements OnMapReadyCallback,
         disposable = Go4LunchStreams.getInstance().streamFetchGooglePlaces(position, 7000, RESTAURANT).subscribeWith(new DisposableObserver<Google>() {
             @Override
             public void onNext(Google google) {
-                resultList.addAll(google.getResults());
+                nearbyResultList.addAll(google.getResults());
                 updateGoogleUi();
             }
 
@@ -105,12 +118,10 @@ public class MapViewFragment extends BaseFragment implements OnMapReadyCallback,
             mGoogleMap.setOnMyLocationButtonClickListener(this);
             mGoogleMap.setOnMyLocationClickListener(this);
             mGoogleMap.setOnCameraIdleListener(this);
-        } else {
-            // Show rationale and request permission
-        }
-        latLng = new LatLng(mGPSTracker.getLatitude(), mGPSTracker.getLongitude());
+            }
+        LatLng latLng = new LatLng(mGPSTracker.getLatitude(), mGPSTracker.getLongitude());
         position = mGPSTracker.getLatitude() + "," + mGPSTracker.getLongitude();
-        googleMap.addMarker(new MarkerOptions().position(latLng).title("Marker Title").snippet("Marker Description"));
+        googleMap.addMarker(new MarkerOptions().position(latLng));
         CameraPosition cameraPosition = new CameraPosition.Builder().target(latLng).zoom(12).build();
         googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 
@@ -153,7 +164,7 @@ public class MapViewFragment extends BaseFragment implements OnMapReadyCallback,
         BitmapDrawable bitmapDrawable = (BitmapDrawable)getResources().getDrawable(R.drawable.ic_restaurant_marker_orange);
         Bitmap bitmap = bitmapDrawable.getBitmap();
         Bitmap iconSize = Bitmap.createScaledBitmap(bitmap, width, height, false);
-        for(NearbyResult mResult : resultList){
+        for(NearbyResult mResult : nearbyResultList){
             LatLng restau = new LatLng(mResult.getGeometry().getLocation().getLat(), mResult.getGeometry().getLocation().getLng());
             Marker marker = mGoogleMap.addMarker(new MarkerOptions().position(restau)
                     .title(mResult.getName())

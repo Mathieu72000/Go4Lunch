@@ -35,4 +35,8 @@
     <string name="restaurant_closing_soon">Ferme bientôt (%1$s)</string>
     <string name="user_name">%1$s est en train de manger à %2$s</string>
     <string name="decided">n\'a pas encore décidé</string>
+    <string name="join">Vous rejoignez ce restaurant !</string>
+    <string name="no_longer_join">Vous ne rejoignez plus ce restaurant</string>
+    <string name="no_email_found">Aucun email trouvé</string>
+    <string name="no_username_found">Aucun nom d\'utilisateur trouvé</string>
 </resources>

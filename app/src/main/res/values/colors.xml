@@ -18,5 +18,5 @@
 
     <!-- RATING BAR -->
     <color name="colorStar">#ffd600</color>
-    <color name="colorGray">#9e9e9e</color>
+    <color name="colorGray">#8888</color>
 </resources>

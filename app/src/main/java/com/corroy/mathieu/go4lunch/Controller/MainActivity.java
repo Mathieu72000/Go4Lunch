@@ -121,7 +121,7 @@ public class MainActivity extends BaseActivity {
             finish();
     }
 
-    private void createUserFirestore(){
+    private void createUserFireStore(){
         if(this.getCurrentUser() != null){
             String urlPicture = (this.getCurrentUser().getPhotoUrl() != null) ? this.getCurrentUser().getPhotoUrl().toString() : null;
             String username = this.getCurrentUser().getDisplayName();
@@ -140,7 +140,7 @@ public class MainActivity extends BaseActivity {
         if (requestCode == RC_SIGN_IN) {
             if (resultCode == RESULT_OK) { // SUCCESS
                 showSnackBar(this.coordinatorLayout, getResources().getString(R.string.connexion_success));
-                this.createUserFirestore();
+                this.createUserFireStore();
                 this.startActivityIfLogged();
             } else { // ERRORS
                 if (response == null) {

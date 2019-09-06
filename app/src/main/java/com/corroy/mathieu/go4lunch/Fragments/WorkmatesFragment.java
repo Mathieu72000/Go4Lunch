@@ -6,7 +6,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import com.corroy.mathieu.go4lunch.Controller.FirstScreenActivity;
 import com.corroy.mathieu.go4lunch.Models.Helper.User;
 import com.corroy.mathieu.go4lunch.Models.Helper.UserHelper;
 import com.corroy.mathieu.go4lunch.R;
@@ -43,7 +42,7 @@ public class WorkmatesFragment extends BaseFragment {
         View view = inflater.inflate(R.layout.fragment_workmates, container, false);
         ButterKnife.bind(this, view);
         this.configureRecyclerView();
-        this.executeFirebaseRequest();
+        this.executeFireBaseRequest();
         return view;
     }
 
@@ -54,7 +53,7 @@ public class WorkmatesFragment extends BaseFragment {
         this.recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
     }
 
-    private void executeFirebaseRequest(){
+    private void executeFireBaseRequest(){
         FirebaseFirestore.getInstance()
                 .collection(COLLECTION_NAME)
                 .get()

@@ -9,11 +9,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import com.corroy.mathieu.go4lunch.Controller.FirstScreenActivity;
@@ -45,11 +43,9 @@ public class ListViewFragment extends BaseFragment {
 
     @BindView(R.id.listview_recyclerview)
     RecyclerView recyclerView;
-
     private String position;
     private List<NearbyResult> nearbyResultList;
     private ListViewAdapter listViewAdapter;
-    private List<String> fullList;
     private AutoCompleteTextView autoCompleteTextView;
     private ArrayAdapter<String> adapter;
 
@@ -103,19 +99,15 @@ public class ListViewFragment extends BaseFragment {
             }
         });
 
-        autoCompleteTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String item = adapter.getItem(position);
-                Log.i("ITEM", item);
-                List<NearbyResult> nearbyResultListFilter = new ArrayList<>();
-                for (NearbyResult nearbyResult : nearbyResultList) {
-                    if(nearbyResult.getName().equals(item)){
-                        nearbyResultListFilter.add(nearbyResult);
-                    }
+        autoCompleteTextView.setOnItemClickListener((parent, view1, position, id) -> {
+            String item = adapter.getItem(position);
+            List<NearbyResult> nearbyResultListFilter = new ArrayList<>();
+            for (NearbyResult nearbyResult : nearbyResultList) {
+                if(nearbyResult.getName().equals(item)){
+                    nearbyResultListFilter.add(nearbyResult);
                 }
-                listViewAdapter.refreshAdapter(nearbyResultListFilter);
             }
+            listViewAdapter.refreshAdapter(nearbyResultListFilter);
         });
 
         return view;
