@@ -1,4 +1,4 @@
-package com.corroy.mathieu.go4lunch.Models;
+package com.corroy.mathieu.go4lunch.Models.NearbySearch;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

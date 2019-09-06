@@ -1,19 +1,21 @@
-package com.corroy.mathieu.go4lunch;
+package com.corroy.mathieu.go4lunch.Controller;
 
+import android.Manifest;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.Snackbar;
-
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import android.widget.Toast;
+import com.corroy.mathieu.go4lunch.Models.Helper.UserHelper;
+import com.corroy.mathieu.go4lunch.R;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-
+import com.google.android.material.snackbar.Snackbar;
 import java.util.Arrays;
 import butterknife.BindView;
 import butterknife.OnClick;
+import pub.devrel.easypermissions.AfterPermissionGranted;
+import pub.devrel.easypermissions.EasyPermissions;
 
 public class MainActivity extends BaseActivity {
 
@@ -30,10 +32,13 @@ public class MainActivity extends BaseActivity {
     //FOR DATA
     // - Identifier for Sign-In Activity
     private static final int RC_SIGN_IN = 123;
+    private final int REQUEST_LOCATION_PERMISSION = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        requestLocationPermission();
 
         if(this.isCurrentUserLogged()) {
             this.startActivityIfLogged();
@@ -113,6 +118,18 @@ public class MainActivity extends BaseActivity {
     private void startActivityIfLogged(){
             Intent intent = new Intent(this, FirstScreenActivity.class);
             startActivity(intent);
+            finish();
+    }
+
+    private void createUserFireStore(){
+        if(this.getCurrentUser() != null){
+            String urlPicture = (this.getCurrentUser().getPhotoUrl() != null) ? this.getCurrentUser().getPhotoUrl().toString() : null;
+            String username = this.getCurrentUser().getDisplayName();
+            String uid = this.getCurrentUser().getUid();
+
+            UserHelper.createUser(uid, username, urlPicture)
+                    .addOnFailureListener(e -> Toast.makeText(getApplicationContext(), getResources().getString(R.string.error_during_creating), Toast.LENGTH_SHORT).show());
+        }
     }
 
     // - Method that handles response after SignIn Activity close
@@ -122,17 +139,40 @@ public class MainActivity extends BaseActivity {
 
         if (requestCode == RC_SIGN_IN) {
             if (resultCode == RESULT_OK) { // SUCCESS
-                showSnackBar(this.coordinatorLayout, "Connexion Success !");
+                showSnackBar(this.coordinatorLayout, getResources().getString(R.string.connexion_success));
+                this.createUserFireStore();
                 this.startActivityIfLogged();
             } else { // ERRORS
                 if (response == null) {
-                    showSnackBar(this.coordinatorLayout, "Authentification Canceled");
+                    showSnackBar(this.coordinatorLayout, getResources().getString(R.string.authentication_canceled));
                 } else if (response.getError().getErrorCode() == ErrorCodes.NO_NETWORK) {
-                    showSnackBar(this.coordinatorLayout, "No Network");
+                    showSnackBar(this.coordinatorLayout, getResources().getString(R.string.no_network));
                 } else if (response.getError().getErrorCode() == ErrorCodes.UNKNOWN_ERROR) {
-                    showSnackBar(this.coordinatorLayout, "Unknown Error");
+                    showSnackBar(this.coordinatorLayout, getResources().getString(R.string.error_restaurant));
                 }
             }
+        }
+    }
+
+    // -------------------
+    // PERMISSIONS
+    // -------------------
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        // Forward results to EasyPermissions
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
+    }
+
+    @AfterPermissionGranted(REQUEST_LOCATION_PERMISSION)
+    public void requestLocationPermission() {
+        String[] perms = {Manifest.permission.ACCESS_FINE_LOCATION};
+        if(EasyPermissions.hasPermissions(this, perms)) {
+        }
+        else {
+            EasyPermissions.requestPermissions(this, getResources().getString(R.string.location_permission), REQUEST_LOCATION_PERMISSION, perms);
         }
     }
 }

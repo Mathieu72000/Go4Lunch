@@ -1,6 +1,7 @@
-package com.corroy.mathieu.go4lunch.Models;
+package com.corroy.mathieu.go4lunch.Models.NearbySearch;
 
 import java.util.List;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -11,7 +12,10 @@ public class Google {
     private List<Object> htmlAttributions = null;
     @SerializedName("results")
     @Expose
-    private List<Result> results = null;
+    private List<NearbyResult> results = null;
+    @SerializedName("status")
+    @Expose
+    private String status;
 
     public List<Object> getHtmlAttributions() {
         return htmlAttributions;
@@ -21,12 +25,19 @@ public class Google {
         this.htmlAttributions = htmlAttributions;
     }
 
-    public List<Result> getResults() {
+    public List<NearbyResult> getResults() {
         return results;
     }
 
-    public void setResults(List<Result> results) {
+    public void setResults(List<NearbyResult> results) {
         this.results = results;
     }
 
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
 }
