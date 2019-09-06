@@ -17,7 +17,7 @@ import butterknife.OnClick;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
 
-public class MainActivity extends BaseActivity {
+public class LogInActivity extends BaseActivity {
 
     @Override
     public int getFragmentLayout() {
@@ -116,7 +116,7 @@ public class MainActivity extends BaseActivity {
     // --------------------
 
     private void startActivityIfLogged(){
-            Intent intent = new Intent(this, FirstScreenActivity.class);
+            Intent intent = new Intent(this, MainScreenActivity.class);
             startActivity(intent);
             finish();
     }

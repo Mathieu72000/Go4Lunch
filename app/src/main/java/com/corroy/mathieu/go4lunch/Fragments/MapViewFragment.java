@@ -10,15 +10,11 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 import android.widget.RelativeLayout;
-import com.corroy.mathieu.go4lunch.Controller.FirstScreenActivity;
+import com.corroy.mathieu.go4lunch.Controller.MainScreenActivity;
 import com.corroy.mathieu.go4lunch.Controller.RestaurantActivity;
 import com.corroy.mathieu.go4lunch.Models.NearbySearch.Google;
 import com.corroy.mathieu.go4lunch.Models.NearbySearch.NearbyResult;
@@ -32,17 +28,8 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.libraries.places.api.Places;
-import com.google.android.libraries.places.api.model.AutocompletePrediction;
-import com.google.android.libraries.places.api.model.AutocompleteSessionToken;
-import com.google.android.libraries.places.api.model.Place;
-import com.google.android.libraries.places.api.model.RectangularBounds;
-import com.google.android.libraries.places.api.model.TypeFilter;
-import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest;
-import com.google.android.libraries.places.api.net.PlacesClient;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -175,9 +162,9 @@ public class MapViewFragment extends BaseFragment implements OnMapReadyCallback,
     }
 
     // Call when the camera has ended
-    // Get the latLngBounds from the camera and set it into a FirstScreenActivity variable
+    // Get the latLngBounds from the camera and set it into a MainScreenActivity variable
     @Override
     public void onCameraIdle() {
-        ((FirstScreenActivity) getActivity()).setLatLngBounds(mGoogleMap.getProjection().getVisibleRegion().latLngBounds);
+        ((MainScreenActivity) getActivity()).setLatLngBounds(mGoogleMap.getProjection().getVisibleRegion().latLngBounds);
     }
 }

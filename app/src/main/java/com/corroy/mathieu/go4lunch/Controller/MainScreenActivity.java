@@ -27,7 +27,7 @@ import com.google.android.material.navigation.NavigationView;
 import java.util.Objects;
 import butterknife.BindView;
 
-public class FirstScreenActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class MainScreenActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     // FOR DESIGN
     @BindView(R.id.first_screen_toolbar)
@@ -193,7 +193,7 @@ public class FirstScreenActivity extends BaseActivity implements NavigationView.
     private OnSuccessListener<Void> updateUIAfterRequestCompleted(final int origin) {
         return aVoid -> {
             if (origin == SIGN_OUT_TASK) {
-                Intent intent = new Intent(this, MainActivity.class);
+                Intent intent = new Intent(this, LogInActivity.class);
                 startActivity(intent);
                 finish();
             }

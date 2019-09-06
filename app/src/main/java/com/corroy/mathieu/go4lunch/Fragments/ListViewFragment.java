@@ -14,7 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
-import com.corroy.mathieu.go4lunch.Controller.FirstScreenActivity;
+import com.corroy.mathieu.go4lunch.Controller.MainScreenActivity;
 import com.corroy.mathieu.go4lunch.Models.NearbySearch.Google;
 import com.corroy.mathieu.go4lunch.Models.NearbySearch.NearbyResult;
 import com.corroy.mathieu.go4lunch.R;
@@ -157,7 +157,7 @@ public class ListViewFragment extends BaseFragment {
         PlacesClient placesClient = Places.createClient(getContext());
 
         AutocompleteSessionToken token = AutocompleteSessionToken.newInstance();
-        LatLngBounds latLngBounds = ((FirstScreenActivity) getActivity()).getLatLngBounds();
+        LatLngBounds latLngBounds = ((MainScreenActivity) getActivity()).getLatLngBounds();
         RectangularBounds bounds = RectangularBounds.newInstance(latLngBounds.southwest, latLngBounds.northeast);
 
         FindAutocompletePredictionsRequest request = FindAutocompletePredictionsRequest.builder()
