@@ -152,6 +152,7 @@ public class RestaurantActivity extends BaseActivity {
                             UserHelper.getUser(documentSnapshot.getId()).addOnSuccessListener(documentSnapshot1 -> {
                                 User user = documentSnapshot1.toObject(User.class);
                                 user.setJoinedRestaurant(result.getName());
+                                user.setRestaurantId(result.getPlaceId());
                                 if(!user.getUid().equals(getCurrentUser().getUid())){
                                     userList.add(user);}
                                 workmatesAdapter.notifyDataSetChanged();
@@ -177,7 +178,7 @@ public class RestaurantActivity extends BaseActivity {
     }
 
     public void joinTheRestaurant(){
-        UserHelper.updateUserRestaurant(getCurrentUser().getUid(), result.getName());
+        UserHelper.updateUserRestaurant(getCurrentUser().getUid(), result.getName(), result.getPlaceId());
         floatButton.setImageDrawable(getResources().getDrawable(R.drawable.validate));
         floatButton.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
         floatButton.setColorFilter(getResources().getColor(R.color.colorTransparent));

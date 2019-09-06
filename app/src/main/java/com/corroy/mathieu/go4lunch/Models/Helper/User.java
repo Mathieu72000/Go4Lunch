@@ -9,6 +9,7 @@ public class User implements Parcelable {
     private String username;
     private String urlPicture;
     private String joinedRestaurant;
+    private String restaurantId;
 
     public User(){}
 
@@ -23,6 +24,7 @@ public class User implements Parcelable {
         username = in.readString();
         urlPicture = in.readString();
         joinedRestaurant = in.readString();
+        restaurantId = in.readString();
     }
 
     public static final Creator<User> CREATOR = new Creator<User>() {
@@ -53,10 +55,18 @@ public class User implements Parcelable {
         return joinedRestaurant;
     }
 
+    public String getRestaurantId() {
+        return restaurantId;
+    }
+
     // --- SETTERS ---
 
     public void setJoinedRestaurant(String joinedRestaurant) {
         this.joinedRestaurant = joinedRestaurant;
+    }
+
+    public void setRestaurantId(String restaurantId) {
+        this.restaurantId = restaurantId;
     }
 
     // ------------------------------------------------
@@ -72,5 +82,6 @@ public class User implements Parcelable {
         dest.writeString(username);
         dest.writeString(urlPicture);
         dest.writeString(joinedRestaurant);
+        dest.writeString(restaurantId);
     }
 }

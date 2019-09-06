@@ -50,8 +50,8 @@ public class UserHelper {
     }
 
     // --- UPDATE ---
-    public static Task<Void> updateUserRestaurant(String userId, String joinedRestaurant){
-        return UserHelper.getUsersCollection().document(userId).update("joinedRestaurant", joinedRestaurant);
+    public static Task<Void> updateUserRestaurant(String userId, String joinedRestaurant, String restaurantId){
+        return UserHelper.getUsersCollection().document(userId).update("joinedRestaurant", joinedRestaurant, "restaurantId", restaurantId);
     }
 
     // ---- DELETE ---
@@ -70,6 +70,7 @@ public class UserHelper {
     public static Task<Void> deleteUserRestaurant(String userId){
         Map<String, Object> update = new HashMap<>();
         update.put("joinedRestaurant", FieldValue.delete());
+        update.put("restaurantId", FieldValue.delete());
         return UserHelper.getUsersCollection().document(userId).update(update);
     }
 }
