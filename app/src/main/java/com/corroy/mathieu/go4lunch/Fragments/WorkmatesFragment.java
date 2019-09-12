@@ -7,8 +7,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import com.corroy.mathieu.go4lunch.Models.Helper.User;
+import com.corroy.mathieu.go4lunch.Models.Helper.UserHelper;
 import com.corroy.mathieu.go4lunch.R;
-import com.corroy.mathieu.go4lunch.Utils.FirebaseRequest;
 import com.corroy.mathieu.go4lunch.Views.WorkmatesAdapter;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,8 +39,10 @@ public class WorkmatesFragment extends BaseFragment {
         View view = inflater.inflate(R.layout.fragment_workmates, container, false);
         ButterKnife.bind(this, view);
         this.configureRecyclerView();
-        FirebaseRequest firebaseRequest = new FirebaseRequest();
-        firebaseRequest.executeFireBaseRequestFragment(userList, workmatesAdapter);
+        UserHelper.getCoWorkers(userList -> {
+            WorkmatesFragment.this.userList = userList;
+            workmatesAdapter.refreshAdapter(userList);
+        });
         return view;
     }
 

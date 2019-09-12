@@ -3,8 +3,10 @@ package com.corroy.mathieu.go4lunch.Controller;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -17,10 +19,11 @@ import com.corroy.mathieu.go4lunch.Models.Details.Result;
 import com.corroy.mathieu.go4lunch.Models.Helper.User;
 import com.corroy.mathieu.go4lunch.Models.Helper.UserHelper;
 import com.corroy.mathieu.go4lunch.R;
-import com.corroy.mathieu.go4lunch.Utils.FirebaseRequest;
 import com.corroy.mathieu.go4lunch.Utils.Go4LunchStreams;
 import com.corroy.mathieu.go4lunch.Views.WorkmatesAdapter;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.firestore.DocumentSnapshot;
+
 import java.util.ArrayList;
 import java.util.List;
 import butterknife.BindView;
@@ -51,7 +54,6 @@ public class RestaurantActivity extends BaseActivity {
     private List<User> userList;
     private Result result;
     private WorkmatesAdapter workmatesAdapter;
-    private FirebaseRequest firebaseRequest;
     private static final String GET_ID = "ID";
     private static final String GET_PICTURE = "PICTURE";
     private static final String JOIN = "JOIN";
@@ -63,8 +65,6 @@ public class RestaurantActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ButterKnife.bind(this);
-
-        firebaseRequest = new FirebaseRequest();
 
         placeId = getIntent().getStringExtra(GET_ID);
         picture = getIntent().getStringExtra(GET_PICTURE);
@@ -98,7 +98,10 @@ public class RestaurantActivity extends BaseActivity {
             @Override
             public void onNext(Details details) {
                 result = details.getResult();
-                firebaseRequest.executeFireBaseRequestActivity(result, userList, workmatesAdapter);
+                UserHelper.getRestaurantInfo(result, userList -> {
+                    RestaurantActivity.this.userList = userList;
+                    workmatesAdapter.notifyDataSetChanged();
+                });
             }
 
             @Override
@@ -137,6 +140,8 @@ public class RestaurantActivity extends BaseActivity {
                     .load(PICTURE_URL + picture)
                     .into(restaurantImageView);
         }
+
+        this.restoreLikeButton();
     }
 
 
@@ -157,7 +162,7 @@ public class RestaurantActivity extends BaseActivity {
     }
 
     public void joinTheRestaurant(){
-        UserHelper.updateUserRestaurant(getCurrentUser().getUid(), result.getName(), result.getPlaceId());
+        UserHelper.updateUserRestaurant(UserHelper.getCurrentUser().getUid(), result.getName(), result.getPlaceId());
         floatButton.setImageDrawable(getResources().getDrawable(R.drawable.validate));
         floatButton.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
         floatButton.setColorFilter(getResources().getColor(R.color.colorTransparent));
@@ -166,7 +171,7 @@ public class RestaurantActivity extends BaseActivity {
     }
 
     public void disjointTheRestaurant(){
-        UserHelper.deleteUserRestaurant(getCurrentUser().getUid());
+        UserHelper.deleteUserRestaurant(UserHelper.getCurrentUser().getUid());
         floatButton.setImageDrawable(getResources().getDrawable(R.drawable.pic_logo_go4lunch_512x512));
         floatButton.setColorFilter(getResources().getColor(R.color.toolbar_darker));
         Toast.makeText(this, getResources().getString(R.string.no_longer_join), Toast.LENGTH_SHORT).show();
@@ -206,8 +211,8 @@ public class RestaurantActivity extends BaseActivity {
     }
 
     private void likeTheRestaurant(){
-        if(getCurrentUser() != null) {
-            UserHelper.createLike(result.getPlaceId(), getCurrentUser().getUid()).addOnCompleteListener(task -> {
+        if(UserHelper.getCurrentUser() != null) {
+            UserHelper.createLike(result.getPlaceId(), UserHelper.getCurrentUser().getUid()).addOnCompleteListener(task -> {
                if(task.isSuccessful()){
                    Toast.makeText(this, getResources().getString(R.string.like_restaurant), Toast.LENGTH_SHORT).show();
                    likeBtn.setText(getResources().getString(R.string.UNLIKE));
@@ -219,13 +224,33 @@ public class RestaurantActivity extends BaseActivity {
     }
 
     private void dislikeThisRestaurant(){
-        if(getCurrentUser() != null){
-            UserHelper.deleteLike(result.getPlaceId(), getCurrentUser().getUid());
+        if(UserHelper.getCurrentUser() != null){
+            UserHelper.deleteLike(result.getPlaceId(), UserHelper.getCurrentUser().getUid());
             likeBtn.setText(getResources().getString(R.string.LIKE));
             Toast.makeText(this, getResources().getString(R.string.dislike_restaurant), Toast.LENGTH_SHORT).show();
         }else{
             Toast.makeText(this, getResources().getString(R.string.error_restaurant), Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void restoreLikeButton() {
+        UserHelper.restoreLike(UserHelper.getCurrentUser().getUid()).addOnCompleteListener(task -> {
+            if(task.isSuccessful()){
+                if(task.getResult().isEmpty()){
+                    likeBtn.setText(getResources().getString(R.string.LIKE));
+                } else {
+                    for (DocumentSnapshot restaurant : task.getResult()){
+//                        if(restaurant.getId().equals(result.getPlaceId())){
+                            if(result.getPlaceId().equals(restaurant.getId())){
+                            likeBtn.setText(getResources().getString(R.string.UNLIKE));
+                            break;
+                        } else {
+                            likeBtn.setText(getResources().getString(R.string.LIKE));
+                        }
+                    }
+                }
+            }
+        });
     }
 
     // Dispose subscription

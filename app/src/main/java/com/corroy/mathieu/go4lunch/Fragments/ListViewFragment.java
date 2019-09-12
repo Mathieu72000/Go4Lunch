@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import com.corroy.mathieu.go4lunch.Controller.MainScreenActivity;
+import com.corroy.mathieu.go4lunch.Models.Helper.User;
 import com.corroy.mathieu.go4lunch.Models.NearbySearch.Google;
 import com.corroy.mathieu.go4lunch.Models.NearbySearch.NearbyResult;
 import com.corroy.mathieu.go4lunch.R;
@@ -22,7 +23,7 @@ import com.corroy.mathieu.go4lunch.Controller.RestaurantActivity;
 import com.corroy.mathieu.go4lunch.Utils.GPSTracker;
 import com.corroy.mathieu.go4lunch.Utils.Go4LunchStreams;
 import com.corroy.mathieu.go4lunch.Utils.ItemClickSupport;
-import com.corroy.mathieu.go4lunch.Views.ListViewAdapter;
+import com.corroy.mathieu.go4lunch.Views.RestaurantsAdapter;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.AutocompletePrediction;
@@ -45,9 +46,10 @@ public class ListViewFragment extends BaseFragment {
     RecyclerView recyclerView;
     private String position;
     private List<NearbyResult> nearbyResultList;
-    private ListViewAdapter listViewAdapter;
+    private RestaurantsAdapter listViewAdapter;
     private AutoCompleteTextView autoCompleteTextView;
     private ArrayAdapter<String> adapter;
+    private User user;
 
     public static ListViewFragment newInstance() {
         return new ListViewFragment();
@@ -115,7 +117,7 @@ public class ListViewFragment extends BaseFragment {
 
     private void configureRecyclerView() {
         this.nearbyResultList = new ArrayList<>();
-        this.listViewAdapter = new ListViewAdapter(getContext(), nearbyResultList, position);
+        this.listViewAdapter = new RestaurantsAdapter(getContext(), nearbyResultList, position);
         this.recyclerView.setAdapter(this.listViewAdapter);
         this.recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         this.recyclerView.addItemDecoration(new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL));

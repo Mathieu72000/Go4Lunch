@@ -33,4 +33,9 @@ public class WorkmatesAdapter extends RecyclerView.Adapter<WorkmatesViewHolder> 
     public int getItemCount() {
         return user.size();
     }
+
+    public void refreshAdapter(List<User> userList){
+        user = userList;
+        notifyDataSetChanged();
+    }
 }

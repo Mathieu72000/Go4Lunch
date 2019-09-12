@@ -40,7 +40,7 @@ public class LogInActivity extends BaseActivity {
 
         requestLocationPermission();
 
-        if(this.isCurrentUserLogged()) {
+        if(UserHelper.isCurrentUserLogged()) {
             this.startActivityIfLogged();
         }
     }
@@ -51,7 +51,7 @@ public class LogInActivity extends BaseActivity {
 
     @OnClick(R.id.mainActivity_google_login)
     public void onClickGoogleButton() {
-        if (this.isCurrentUserLogged()) {
+        if (UserHelper.isCurrentUserLogged()) {
             this.startActivityIfLogged();
         } else {
             this.startSignInActivityForGoogle();
@@ -61,7 +61,7 @@ public class LogInActivity extends BaseActivity {
     // Launch Sign-in
     @OnClick(R.id.mainActivity_facebook_login)
     public void onClickFacebookButton() {
-        if (this.isCurrentUserLogged()) {
+        if (UserHelper.isCurrentUserLogged()) {
             this.startActivityIfLogged();
         } else {
             this.startSignInActivityForFacebook();
@@ -122,10 +122,10 @@ public class LogInActivity extends BaseActivity {
     }
 
     private void createUserFireStore(){
-        if(this.getCurrentUser() != null){
-            String urlPicture = (this.getCurrentUser().getPhotoUrl() != null) ? this.getCurrentUser().getPhotoUrl().toString() : null;
-            String username = this.getCurrentUser().getDisplayName();
-            String uid = this.getCurrentUser().getUid();
+        if(UserHelper.getCurrentUser() != null){
+            String urlPicture = (UserHelper.getCurrentUser().getPhotoUrl() != null) ? UserHelper.getCurrentUser().getPhotoUrl().toString() : null;
+            String username = UserHelper.getCurrentUser().getDisplayName();
+            String uid = UserHelper.getCurrentUser().getUid();
 
             UserHelper.createUser(uid, username, urlPicture)
                     .addOnFailureListener(e -> Toast.makeText(getApplicationContext(), getResources().getString(R.string.error_during_creating), Toast.LENGTH_SHORT).show());

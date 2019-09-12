@@ -2,19 +2,23 @@ package com.corroy.mathieu.go4lunch.Views;
 
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.corroy.mathieu.go4lunch.Models.Helper.User;
 import com.corroy.mathieu.go4lunch.Models.NearbySearch.NearbyResult;
 import com.corroy.mathieu.go4lunch.Models.NearbySearch.Location;
 import com.corroy.mathieu.go4lunch.R;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class ListViewHolder extends RecyclerView.ViewHolder {
+public class RestaurantsViewHolder extends RecyclerView.ViewHolder {
 
     @BindView(R.id.item_textview_name)
     TextView restaurantName;
@@ -28,11 +32,12 @@ public class ListViewHolder extends RecyclerView.ViewHolder {
     ImageView restaurantPicture;
     @BindView(R.id.item_ratingBar)
     RatingBar restaurantRatingBar;
+    @BindView(R.id.item_imageview_mates)
+    ImageView imageViewMates;
 
     private float[] distanceResults = new float[3];
-    private boolean textOK = false;
 
-    public ListViewHolder(View itemView) {
+    public RestaurantsViewHolder(View itemView) {
         super(itemView);
         ButterKnife.bind(this, itemView);
     }
@@ -76,6 +81,14 @@ public class ListViewHolder extends RecyclerView.ViewHolder {
                     .apply(RequestOptions.centerCropTransform())
                     .into(restaurantPicture);
         }
+
+        // ----------- MATES -----------
+//        if(user.getJoinedRestaurant() != null){
+//            Log.i("GETJOINEDVALUE", user.getJoinedRestaurant());
+//            String mates = user.getJoinedRestaurant();
+//            int matesNumber = Integer.parseInt(mates);
+//            imageViewMates.setImageDrawable(Drawable.createFromPath(itemView.getContext().getResources().getDrawable(R.drawable.baseline_perm_identity_black_24) + "(" + matesNumber + ")"));
+//        }
     }
 
     private void displayRating(NearbyResult result){

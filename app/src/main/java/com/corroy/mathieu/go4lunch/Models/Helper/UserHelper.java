@@ -1,22 +1,35 @@
 package com.corroy.mathieu.go4lunch.Models.Helper;
 
+import androidx.annotation.Nullable;
+import com.corroy.mathieu.go4lunch.Models.Details.Result;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.SetOptions;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class UserHelper {
 
-    private static final String COLLECTION_NAME = "users";
+    public interface OnRequestListener{
+        void onResult(List<User> userList);
+    }
+
+    private static final String COLLECTION_USERS = "users";
     private static final String COLLECTION_LIKED = "restaurantLike";
+    private static final String COLLECTION_RESTAURANTID = "restaurantId";
 
     // --- COLLECTION REFERENCE ---
+
     private static CollectionReference getUsersCollection(){
-        return FirebaseFirestore.getInstance().collection(COLLECTION_NAME);
+        return FirebaseFirestore.getInstance().collection(COLLECTION_USERS);
     }
 
     private static CollectionReference getLikedCollection(){
@@ -24,6 +37,7 @@ public class UserHelper {
     }
 
     // --- CREATE ---
+
     public static Task<Void> createUser(String uid, String username, String urlPicture) {
         // 1 - Create User object
         User userToCreate = new User(uid, username, urlPicture);
@@ -41,6 +55,7 @@ public class UserHelper {
     }
 
     // --- GET ---
+
     public static Task<DocumentSnapshot> getUser(String uid){
         return UserHelper.getUsersCollection().document(uid).get();
     }
@@ -49,7 +64,12 @@ public class UserHelper {
         return UserHelper.getLikedCollection().document(restaurantId).get();
     }
 
+    public static Task<QuerySnapshot> restoreLike(String uid){
+        return UserHelper.getLikedCollection().whereEqualTo(uid, true).get();
+    }
+
     // --- UPDATE ---
+
     public static Task<Void> updateUserRestaurant(String userId, String joinedRestaurant, String restaurantId){
         return UserHelper.getUsersCollection().document(userId).update("joinedRestaurant", joinedRestaurant, "restaurantId", restaurantId);
     }
@@ -73,4 +93,49 @@ public class UserHelper {
         update.put("restaurantId", FieldValue.delete());
         return UserHelper.getUsersCollection().document(userId).update(update);
     }
+
+    public static void getRestaurantInfo(Result result, OnRequestListener onRequestListener){
+        List<User> users = new ArrayList<>();
+        FirebaseFirestore.getInstance()
+                .collection(COLLECTION_USERS)
+                .whereEqualTo(COLLECTION_RESTAURANTID, result.getPlaceId())
+                .get()
+                .addOnCompleteListener(task -> {
+                    if(task.isSuccessful()){
+                        List<DocumentSnapshot> myListOfDocuments = task.getResult().getDocuments();
+                        for(DocumentSnapshot documentSnapshot : myListOfDocuments){
+                                User user = documentSnapshot.toObject(User.class);
+                                user.setJoinedRestaurant(result.getName());
+                                user.setRestaurantId(result.getPlaceId());
+                                if(!user.getUid().equals(getCurrentUser().getUid())){
+                                    users.add(user);}
+                        }
+                        onRequestListener.onResult(users);
+                    }
+                });
+    }
+
+    public static void getCoWorkers(OnRequestListener onRequestListener){
+        List<User> users = new ArrayList<>();
+        FirebaseFirestore.getInstance()
+                .collection(COLLECTION_USERS)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if(task.isSuccessful()){
+                        List<DocumentSnapshot> myListOfDocuments = task.getResult().getDocuments();
+                        for(DocumentSnapshot documentSnapshot : myListOfDocuments){
+                            User user = documentSnapshot.toObject(User.class);
+                            if(!user.getUid().equals(getCurrentUser().getUid())){
+                                users.add(user);}
+                        }
+                        onRequestListener.onResult(users);
+                    }
+                });
+    }
+
+    @Nullable
+    public static FirebaseUser getCurrentUser(){return FirebaseAuth.getInstance().getCurrentUser(); }
+
+    public static boolean isCurrentUserLogged(){return (getCurrentUser() != null); }
+
 }

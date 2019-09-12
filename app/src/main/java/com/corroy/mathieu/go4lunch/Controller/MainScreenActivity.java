@@ -148,22 +148,22 @@ public class MainScreenActivity extends BaseActivity implements NavigationView.O
     //     Update UI when activity is creating
     private void updateUIWhenCreating() {
 
-        if (this.getCurrentUser() != null) {
+        if (UserHelper.getCurrentUser() != null) {
 
             // Get picture URL from FireBase
-            if (this.getCurrentUser().getPhotoUrl() != null) {
+            if (UserHelper.getCurrentUser().getPhotoUrl() != null) {
                 Glide.with(this)
-                        .load(this.getCurrentUser().getPhotoUrl())
+                        .load(UserHelper.getCurrentUser().getPhotoUrl())
                         .apply(RequestOptions.circleCropTransform())
                         .into(profileImageView);
             }
 
             // Get email & username
-            String email = TextUtils.isEmpty(this.getCurrentUser().getEmail()) ?
-                    getResources().getString(R.string.no_email_found) : this.getCurrentUser().getEmail();
+            String email = TextUtils.isEmpty(UserHelper.getCurrentUser().getEmail()) ?
+                    getResources().getString(R.string.no_email_found) : UserHelper.getCurrentUser().getEmail();
             this.emailTextView.setText(email);
 
-            UserHelper.getUser(this.getCurrentUser().getUid()).addOnSuccessListener(documentSnapshot -> {
+            UserHelper.getUser(UserHelper.getCurrentUser().getUid()).addOnSuccessListener(documentSnapshot -> {
                 User currentUser = documentSnapshot.toObject(User.class);
                 assert currentUser != null;
                 String username = TextUtils.isEmpty(currentUser.getUsername()) ?

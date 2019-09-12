@@ -1,9 +1,10 @@
 package com.corroy.mathieu.go4lunch.Fragments;
 
+import android.os.Bundle;
+
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
+
 import io.reactivex.disposables.Disposable;
 
 
@@ -14,14 +15,13 @@ public abstract class BaseFragment extends Fragment {
     public static final String PICTURE = "PICTURE";
     public static final String RESTAURANT = "restaurant";
 
-    // ---------------
-    // FIREBASE
-    // ---------------
-
-    @Nullable
-    protected FirebaseUser getCurrentUser(){return FirebaseAuth.getInstance().getCurrentUser(); }
-
     // ----------------------------------------------------------
+
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
 
     @Override
     public void onDestroy() {
