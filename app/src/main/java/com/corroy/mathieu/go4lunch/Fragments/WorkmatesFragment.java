@@ -7,11 +7,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import com.corroy.mathieu.go4lunch.Models.Helper.User;
-import com.corroy.mathieu.go4lunch.Models.Helper.UserHelper;
 import com.corroy.mathieu.go4lunch.R;
+import com.corroy.mathieu.go4lunch.Utils.FirebaseRequest;
 import com.corroy.mathieu.go4lunch.Views.WorkmatesAdapter;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.ArrayList;
 import java.util.List;
 import butterknife.BindView;
@@ -24,7 +22,6 @@ public class WorkmatesFragment extends BaseFragment {
 
     private List<User> userList;
     private WorkmatesAdapter workmatesAdapter;
-    private static final String COLLECTION_NAME = "users";
 
     public static WorkmatesFragment newInstance() {
       return  new WorkmatesFragment();
@@ -42,33 +39,15 @@ public class WorkmatesFragment extends BaseFragment {
         View view = inflater.inflate(R.layout.fragment_workmates, container, false);
         ButterKnife.bind(this, view);
         this.configureRecyclerView();
-        this.executeFireBaseRequest();
+        FirebaseRequest firebaseRequest = new FirebaseRequest();
+        firebaseRequest.executeFireBaseRequestFragment(userList, workmatesAdapter);
         return view;
     }
 
-    public void configureRecyclerView(){
+    private void configureRecyclerView(){
         this.userList = new ArrayList<>();
         this.workmatesAdapter = new WorkmatesAdapter(userList);
         this.recyclerView.setAdapter(this.workmatesAdapter);
         this.recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-    }
-
-    private void executeFireBaseRequest(){
-        FirebaseFirestore.getInstance()
-                .collection(COLLECTION_NAME)
-                .get()
-                .addOnCompleteListener(task -> {
-                    if(task.isSuccessful()){
-                        List<DocumentSnapshot> myListOfDocuments = task.getResult().getDocuments();
-                        for(DocumentSnapshot documentSnapshot : myListOfDocuments){
-                            UserHelper.getUser(documentSnapshot.getId()).addOnSuccessListener(documentSnapshot1 -> {
-                                User user = documentSnapshot1.toObject(User.class);
-                                if(!user.getUid().equals(getCurrentUser().getUid())){
-                                    userList.add(user);}
-                                workmatesAdapter.notifyDataSetChanged();
-                            });
-                        }
-                    }
-                });
     }
 }

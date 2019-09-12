@@ -17,11 +17,10 @@ import com.corroy.mathieu.go4lunch.Models.Details.Result;
 import com.corroy.mathieu.go4lunch.Models.Helper.User;
 import com.corroy.mathieu.go4lunch.Models.Helper.UserHelper;
 import com.corroy.mathieu.go4lunch.R;
+import com.corroy.mathieu.go4lunch.Utils.FirebaseRequest;
 import com.corroy.mathieu.go4lunch.Utils.Go4LunchStreams;
 import com.corroy.mathieu.go4lunch.Views.WorkmatesAdapter;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.ArrayList;
 import java.util.List;
 import butterknife.BindView;
@@ -52,19 +51,20 @@ public class RestaurantActivity extends BaseActivity {
     private List<User> userList;
     private Result result;
     private WorkmatesAdapter workmatesAdapter;
+    private FirebaseRequest firebaseRequest;
     private static final String GET_ID = "ID";
     private static final String GET_PICTURE = "PICTURE";
     private static final String JOIN = "JOIN";
     private static final String NO_LONGER_JOIN = "DISJOINT";
     private static final String TEL = "tel";
-    private static final String COLLECTION_NAME = "users";
-    private static final String COLLECTION_FIELD = "joinedRestaurant";
     private static final String PICTURE_URL = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=200&maxheight=150&key=AIzaSyDXI74hOiHLi4l2vhUEs23260f055xyXvI&photoreference=";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ButterKnife.bind(this);
+
+        firebaseRequest = new FirebaseRequest();
 
         placeId = getIntent().getStringExtra(GET_ID);
         picture = getIntent().getStringExtra(GET_PICTURE);
@@ -98,7 +98,7 @@ public class RestaurantActivity extends BaseActivity {
             @Override
             public void onNext(Details details) {
                 result = details.getResult();
-                executeFireBaseRequest();
+                firebaseRequest.executeFireBaseRequestActivity(result, userList, workmatesAdapter);
             }
 
             @Override
@@ -139,28 +139,7 @@ public class RestaurantActivity extends BaseActivity {
         }
     }
 
-    // Execute FireBase request to get the collection
-    private void executeFireBaseRequest(){
-        FirebaseFirestore.getInstance()
-                .collection(COLLECTION_NAME)
-                .whereEqualTo(COLLECTION_FIELD, result.getName())
-                .get()
-                .addOnCompleteListener(task -> {
-                    if(task.isSuccessful()){
-                        List<DocumentSnapshot> myListOfDocuments = task.getResult().getDocuments();
-                        for(DocumentSnapshot documentSnapshot : myListOfDocuments){
-                            UserHelper.getUser(documentSnapshot.getId()).addOnSuccessListener(documentSnapshot1 -> {
-                                User user = documentSnapshot1.toObject(User.class);
-                                user.setJoinedRestaurant(result.getName());
-                                user.setRestaurantId(result.getPlaceId());
-                                if(!user.getUid().equals(getCurrentUser().getUid())){
-                                    userList.add(user);}
-                                workmatesAdapter.notifyDataSetChanged();
-                            });
-                        }
-                    }
-                });
-    }
+
 
     // --------------
     // BUTTONS
