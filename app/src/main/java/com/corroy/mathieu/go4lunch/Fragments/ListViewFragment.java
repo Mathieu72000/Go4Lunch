@@ -16,6 +16,7 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import com.corroy.mathieu.go4lunch.Controller.MainScreenActivity;
 import com.corroy.mathieu.go4lunch.Models.Helper.User;
+import com.corroy.mathieu.go4lunch.Models.Helper.UserHelper;
 import com.corroy.mathieu.go4lunch.Models.NearbySearch.Google;
 import com.corroy.mathieu.go4lunch.Models.NearbySearch.NearbyResult;
 import com.corroy.mathieu.go4lunch.R;
@@ -49,7 +50,6 @@ public class ListViewFragment extends BaseFragment {
     private RestaurantsAdapter listViewAdapter;
     private AutoCompleteTextView autoCompleteTextView;
     private ArrayAdapter<String> adapter;
-    private User user;
 
     public static ListViewFragment newInstance() {
         return new ListViewFragment();
@@ -111,7 +111,6 @@ public class ListViewFragment extends BaseFragment {
             }
             listViewAdapter.refreshAdapter(nearbyResultListFilter);
         });
-
         return view;
     }
 

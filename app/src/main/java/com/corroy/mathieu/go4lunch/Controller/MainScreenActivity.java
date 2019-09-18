@@ -13,6 +13,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.corroy.mathieu.go4lunch.Models.Helper.User;
@@ -21,9 +23,16 @@ import com.corroy.mathieu.go4lunch.R;
 import com.corroy.mathieu.go4lunch.Views.PagerAdapter;
 import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import butterknife.BindView;
 
@@ -89,6 +98,8 @@ public class MainScreenActivity extends BaseActivity implements NavigationView.O
             case R.id.yourLunch:
                 break;
             case R.id.settings:
+                Intent settingsIntent = new Intent(this, SettingsActivity.class);
+                startActivity(settingsIntent);
                 break;
             case R.id.logout:
                 this.signOutUserFromFireBase();

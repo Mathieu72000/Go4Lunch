@@ -126,7 +126,7 @@ public class LogInActivity extends BaseActivity {
             String urlPicture = (UserHelper.getCurrentUser().getPhotoUrl() != null) ? UserHelper.getCurrentUser().getPhotoUrl().toString() : null;
             String username = UserHelper.getCurrentUser().getDisplayName();
             String uid = UserHelper.getCurrentUser().getUid();
-
+            //todo Erreur de re créaction
             UserHelper.createUser(uid, username, urlPicture)
                     .addOnFailureListener(e -> Toast.makeText(getApplicationContext(), getResources().getString(R.string.error_during_creating), Toast.LENGTH_SHORT).show());
         }

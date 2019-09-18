@@ -39,4 +39,5 @@
     <string name="no_longer_join">Vous ne rejoignez plus ce restaurant</string>
     <string name="no_email_found">Aucun email trouvé</string>
     <string name="no_username_found">Aucun nom d\'utilisateur trouvé</string>
+    <string name="restaurant_mates_number">(%1$d)</string>
 </resources>

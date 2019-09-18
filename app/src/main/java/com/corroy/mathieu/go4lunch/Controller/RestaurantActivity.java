@@ -3,10 +3,8 @@ package com.corroy.mathieu.go4lunch.Controller;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -23,6 +21,8 @@ import com.corroy.mathieu.go4lunch.Utils.Go4LunchStreams;
 import com.corroy.mathieu.go4lunch.Views.WorkmatesAdapter;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -100,7 +100,7 @@ public class RestaurantActivity extends BaseActivity {
                 result = details.getResult();
                 UserHelper.getRestaurantInfo(result, userList -> {
                     RestaurantActivity.this.userList = userList;
-                    workmatesAdapter.notifyDataSetChanged();
+                    workmatesAdapter.refreshAdapter(userList);
                 });
             }
 
@@ -140,11 +140,9 @@ public class RestaurantActivity extends BaseActivity {
                     .load(PICTURE_URL + picture)
                     .into(restaurantImageView);
         }
-
         this.restoreLikeButton();
+        this.restoreGoButton();
     }
-
-
 
     // --------------
     // BUTTONS
@@ -240,7 +238,6 @@ public class RestaurantActivity extends BaseActivity {
                     likeBtn.setText(getResources().getString(R.string.LIKE));
                 } else {
                     for (DocumentSnapshot restaurant : task.getResult()){
-//                        if(restaurant.getId().equals(result.getPlaceId())){
                             if(result.getPlaceId().equals(restaurant.getId())){
                             likeBtn.setText(getResources().getString(R.string.UNLIKE));
                             break;
@@ -251,6 +248,25 @@ public class RestaurantActivity extends BaseActivity {
                 }
             }
         });
+    }
+
+    private void restoreGoButton() {
+        UserHelper.getBookingRestaurant(UserHelper.getCurrentUser().getUid()).addOnCompleteListener(task -> {
+            if(task.isSuccessful()){
+                String restaurantId = task.getResult().getString("restaurantId");
+                if(restaurantId != null && restaurantId.equals(result.getPlaceId())){
+                    floatButton.setImageDrawable(getResources().getDrawable(R.drawable.validate));
+                    floatButton.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+                    floatButton.setColorFilter(getResources().getColor(R.color.colorTransparent));
+                    floatButton.setTag(NO_LONGER_JOIN);
+                } else {
+                    floatButton.setImageDrawable(getResources().getDrawable(R.drawable.pic_logo_go4lunch_512x512));
+                    floatButton.setColorFilter(getResources().getColor(R.color.toolbar_darker));
+                    floatButton.setTag(JOIN);
+                }
+            }
+        });
+
     }
 
     // Dispose subscription

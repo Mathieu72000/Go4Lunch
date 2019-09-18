@@ -2,8 +2,6 @@ package com.corroy.mathieu.go4lunch.Views;
 
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
-
-import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -11,10 +9,16 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.corroy.mathieu.go4lunch.Models.Helper.User;
+import com.corroy.mathieu.go4lunch.Models.Helper.UserHelper;
 import com.corroy.mathieu.go4lunch.Models.NearbySearch.NearbyResult;
 import com.corroy.mathieu.go4lunch.Models.NearbySearch.Location;
 import com.corroy.mathieu.go4lunch.R;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -34,6 +38,8 @@ public class RestaurantsViewHolder extends RecyclerView.ViewHolder {
     RatingBar restaurantRatingBar;
     @BindView(R.id.item_imageview_mates)
     ImageView imageViewMates;
+    @BindView(R.id.item_textview_mates)
+    TextView textViewMates;
 
     private float[] distanceResults = new float[3];
 
@@ -83,12 +89,32 @@ public class RestaurantsViewHolder extends RecyclerView.ViewHolder {
         }
 
         // ----------- MATES -----------
-//        if(user.getJoinedRestaurant() != null){
-//            Log.i("GETJOINEDVALUE", user.getJoinedRestaurant());
-//            String mates = user.getJoinedRestaurant();
-//            int matesNumber = Integer.parseInt(mates);
-//            imageViewMates.setImageDrawable(Drawable.createFromPath(itemView.getContext().getResources().getDrawable(R.drawable.baseline_perm_identity_black_24) + "(" + matesNumber + ")"));
-//        }
+        UserHelper.getRestaurant(result.getPlaceId()).addOnCompleteListener(task ->  {
+          if(task.isSuccessful()){
+              if(task.getResult().size() > 0){
+                  List<String> resultList = new ArrayList<>();
+                  for (DocumentSnapshot document : task.getResult().getDocuments()) {
+                      String uid = document.getString("uid");
+                      if(!uid.equals(UserHelper.getCurrentUser().getUid()))
+                      resultList.add(uid);
+                  }
+                  if(resultList.size() > 0) {
+                      textViewMates.setText(itemView.getResources().getString(R.string.restaurant_mates_number, task.getResult().size()));
+                      imageViewMates.setImageResource(R.drawable.baseline_perm_identity_black_24);
+                      imageViewMates.setVisibility(View.VISIBLE);
+                  } else {
+                      hideWorkers();
+                  }
+              } else {
+                  hideWorkers();
+              }
+             }
+        });
+        }
+
+    private void hideWorkers() {
+        textViewMates.setText("");
+        imageViewMates.setVisibility(View.GONE);
     }
 
     private void displayRating(NearbyResult result){

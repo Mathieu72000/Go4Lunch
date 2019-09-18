@@ -55,4 +55,5 @@
     <string name="no_email_found">No email found</string>
     <string name="no_username_found">No username found</string>
     <string name="im_hungry" translatable="false">I\'m Hungry!</string>
+    <string name="restaurant_mates_number">(%1$d)</string>
 </resources>

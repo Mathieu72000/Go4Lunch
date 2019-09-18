@@ -9,6 +9,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.SetOptions;
 import java.util.ArrayList;
@@ -68,6 +69,14 @@ public class UserHelper {
         return UserHelper.getLikedCollection().whereEqualTo(uid, true).get();
     }
 
+    public static Task<QuerySnapshot> getRestaurant(String restaurantId){
+        return UserHelper.getUsersCollection().whereEqualTo("restaurantId", restaurantId).get();
+    }
+
+    public static Task<DocumentSnapshot> getBookingRestaurant(String uid){
+        return UserHelper.getUsersCollection().document(uid).get();
+    }
+
     // --- UPDATE ---
 
     public static Task<Void> updateUserRestaurant(String userId, String joinedRestaurant, String restaurantId){
@@ -93,6 +102,10 @@ public class UserHelper {
         update.put("restaurantId", FieldValue.delete());
         return UserHelper.getUsersCollection().document(userId).update(update);
     }
+
+    // ------------
+    // FIREBASE
+    // ------------
 
     public static void getRestaurantInfo(Result result, OnRequestListener onRequestListener){
         List<User> users = new ArrayList<>();
