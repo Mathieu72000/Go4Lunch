@@ -50,12 +50,10 @@ public class RestaurantActivity extends BaseActivity {
     FloatingActionButton floatButton;
     private Disposable disposable;
     private String placeId;
-    private String picture;
     private List<User> userList;
     private Result result;
     private WorkmatesAdapter workmatesAdapter;
     private static final String GET_ID = "ID";
-    private static final String GET_PICTURE = "PICTURE";
     private static final String JOIN = "JOIN";
     private static final String NO_LONGER_JOIN = "DISJOINT";
     private static final String TEL = "tel";
@@ -67,7 +65,6 @@ public class RestaurantActivity extends BaseActivity {
         ButterKnife.bind(this);
 
         placeId = getIntent().getStringExtra(GET_ID);
-        picture = getIntent().getStringExtra(GET_PICTURE);
 
         this.configureRecyclerView();
         this.executeHttpRequestWithRetrofit();
@@ -135,9 +132,9 @@ public class RestaurantActivity extends BaseActivity {
         }
 
         // Get the restaurant picture
-        if (picture != null){
+        if (result.getPhotos().get(0).getPhotoReference() != null){
             Glide.with(this)
-                    .load(PICTURE_URL + picture)
+                    .load(PICTURE_URL + result.getPhotos().get(0).getPhotoReference())
                     .into(restaurantImageView);
         }
         this.restoreLikeButton();

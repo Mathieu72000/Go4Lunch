@@ -56,6 +56,7 @@ public class MainScreenActivity extends BaseActivity implements NavigationView.O
 
     // FOR DATA
     private static final int SIGN_OUT_TASK = 10;
+    public static final String ID = "ID";
 
     @Override
     public int getFragmentLayout() {
@@ -96,6 +97,19 @@ public class MainScreenActivity extends BaseActivity implements NavigationView.O
 
         switch (id) {
             case R.id.yourLunch:
+                UserHelper.getBookingRestaurant(UserHelper.getCurrentUser().getUid()).addOnCompleteListener(task -> {
+                    if(task.isSuccessful()) {
+                        String restaurantId = task.getResult().getString("restaurantId");
+                        if (restaurantId != null) {
+                            Intent intent = new Intent(this, RestaurantActivity.class);
+                            intent.putExtra(ID, restaurantId);
+                            startActivity(intent);
+                        } else {
+                            Toast.makeText(this, "No restaurant booked", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+
                 break;
             case R.id.settings:
                 Intent settingsIntent = new Intent(this, SettingsActivity.class);

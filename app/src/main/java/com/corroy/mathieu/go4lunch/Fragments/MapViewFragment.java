@@ -130,9 +130,7 @@ public class MapViewFragment extends BaseFragment implements OnMapReadyCallback,
     public boolean onMarkerClick(Marker marker) {
         Intent intent = new Intent(getContext(), RestaurantActivity.class);
         NearbyResult tag = (NearbyResult) marker.getTag();
-        String picture = tag.getPhotos().get(0).getPhotoReference();
         intent.putExtra(ID, tag.getPlaceId());
-        intent.putExtra(PICTURE, picture);
         startActivity(intent);
             return false;
     }

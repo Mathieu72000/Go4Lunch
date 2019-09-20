@@ -12,7 +12,6 @@ public abstract class BaseFragment extends Fragment {
 
     protected Disposable disposable;
     public static final String ID = "ID";
-    public static final String PICTURE = "PICTURE";
     public static final String RESTAURANT = "restaurant";
 
     // ----------------------------------------------------------

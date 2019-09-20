@@ -128,10 +128,7 @@ public class ListViewFragment extends BaseFragment {
                     String placeId = listViewAdapter.getmResultList().get(position).getPlaceId();
                     Intent restaurantActivity = new Intent(getContext(), RestaurantActivity.class);
                     restaurantActivity.putExtra(ID, placeId);
-                    if (listViewAdapter.getmResultList().get(position).getPhotos() != null) {
-                        restaurantActivity.putExtra(PICTURE, listViewAdapter.getmResultList().get(position).getPhotos().get(0).getPhotoReference());
-                    }
-                    Objects.requireNonNull(getContext()).startActivity(restaurantActivity);
+                    startActivity(restaurantActivity);
                 });
     }
 
