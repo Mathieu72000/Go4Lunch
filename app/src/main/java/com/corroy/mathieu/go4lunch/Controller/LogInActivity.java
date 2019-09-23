@@ -11,7 +11,7 @@ import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
 import com.google.android.material.snackbar.Snackbar;
-import java.util.Arrays;
+import java.util.Collections;
 import butterknife.BindView;
 import butterknife.OnClick;
 import pub.devrel.easypermissions.AfterPermissionGranted;
@@ -21,7 +21,7 @@ public class LogInActivity extends BaseActivity {
 
     @Override
     public int getFragmentLayout() {
-        return R.layout.activity_main;
+        return R.layout.activity_login;
     }
 
     // FOR DESIGN
@@ -49,6 +49,7 @@ public class LogInActivity extends BaseActivity {
     // ACTIONS
     // --------------------
 
+    // Launch Google Sign-in
     @OnClick(R.id.mainActivity_google_login)
     public void onClickGoogleButton() {
         if (UserHelper.isCurrentUserLogged()) {
@@ -58,13 +59,33 @@ public class LogInActivity extends BaseActivity {
         }
     }
 
-    // Launch Sign-in
+    // Launch Facebook Sign-in
     @OnClick(R.id.mainActivity_facebook_login)
     public void onClickFacebookButton() {
         if (UserHelper.isCurrentUserLogged()) {
             this.startActivityIfLogged();
         } else {
             this.startSignInActivityForFacebook();
+        }
+    }
+
+    // Launch Login Sign-in
+    @OnClick(R.id.mainActivity_login)
+    public void onClickLoginButton() {
+        if (UserHelper.isCurrentUserLogged()) {
+            this.startActivityIfLogged();
+        } else {
+            this.startSignInActivityForMailPassword();
+        }
+    }
+
+    // Launch Login Sign-in
+    @OnClick(R.id.mainActivity_twitter_login)
+    public void onClickTwitterButton() {
+        if (UserHelper.isCurrentUserLogged()) {
+            this.startActivityIfLogged();
+        } else {
+            this.startSignInActivityForTwitter();
         }
     }
 
@@ -86,7 +107,7 @@ public class LogInActivity extends BaseActivity {
                 AuthUI.getInstance()
                         .createSignInIntentBuilder()
                         .setAvailableProviders(
-                                Arrays.asList(new AuthUI.IdpConfig.GoogleBuilder().build())) //GOOGLE
+                                Collections.singletonList(new AuthUI.IdpConfig.GoogleBuilder().build())) //GOOGLE
                         .setIsSmartLockEnabled(false, true)
                         .build(), RC_SIGN_IN);
     }
@@ -97,7 +118,29 @@ public class LogInActivity extends BaseActivity {
                 AuthUI.getInstance()
                         .createSignInIntentBuilder()
                         .setAvailableProviders(
-                                Arrays.asList(new AuthUI.IdpConfig.FacebookBuilder().build())) //GOOGLE
+                                Collections.singletonList(new AuthUI.IdpConfig.FacebookBuilder().build())) //GOOGLE
+                        .setIsSmartLockEnabled(false, true)
+                        .build(), RC_SIGN_IN);
+    }
+
+    // - Launch Sign-In Activity for mail/password
+    private void startSignInActivityForMailPassword(){
+        startActivityForResult(
+                AuthUI.getInstance()
+                    .createSignInIntentBuilder()
+                    .setAvailableProviders(
+                            Collections.singletonList(new AuthUI.IdpConfig.EmailBuilder().build()))
+                    .setIsSmartLockEnabled(false, true)
+                    .build(), RC_SIGN_IN);
+    }
+
+    // - Launch Sign-In Activity for Twitter
+    private void startSignInActivityForTwitter(){
+        startActivityForResult(
+                AuthUI.getInstance()
+                        .createSignInIntentBuilder()
+                        .setAvailableProviders(
+                                Collections.singletonList(new AuthUI.IdpConfig.TwitterBuilder().build()))
                         .setIsSmartLockEnabled(false, true)
                         .build(), RC_SIGN_IN);
     }
@@ -122,7 +165,7 @@ public class LogInActivity extends BaseActivity {
     }
 
     private void createUserFireStore(){
-        if(UserHelper.getCurrentUser() != null){
+        if(UserHelper.getCurrentUser() != null) {
             String urlPicture = (UserHelper.getCurrentUser().getPhotoUrl() != null) ? UserHelper.getCurrentUser().getPhotoUrl().toString() : null;
             String username = UserHelper.getCurrentUser().getDisplayName();
             String uid = UserHelper.getCurrentUser().getUid();

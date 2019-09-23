@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Go4Lunch</string>
-    <string name="facebook_button" translatable="true">Connexion à facebook</string>
+    <string name="facebook_button">Connexion à facebook</string>
     <string name="google_button">Connexion à Google</string>
     <string name="map_view">"Carte "</string>
     <string name="list_view">Liste</string>
@@ -40,4 +40,7 @@
     <string name="no_email_found">Aucun email trouvé</string>
     <string name="no_username_found">Aucun nom d\'utilisateur trouvé</string>
     <string name="restaurant_mates_number">(%1$d)</string>
+    <string name="login_password">Identifiant / Mot de passe</string>
+    <string name="sign_in_with_twitter">Connexion à Twitter</string>
+    <string name="no_restaurant">Vous ne rejoignez aucun restaurant !</string>
 </resources>

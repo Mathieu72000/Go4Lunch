@@ -1,10 +1,8 @@
 package com.corroy.mathieu.go4lunch.Fragments;
 
 import android.os.Bundle;
-
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-
 import io.reactivex.disposables.Disposable;
 
 

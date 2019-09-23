@@ -21,9 +21,6 @@ import com.corroy.mathieu.go4lunch.Utils.Go4LunchStreams;
 import com.corroy.mathieu.go4lunch.Views.WorkmatesAdapter;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-
 import java.util.ArrayList;
 import java.util.List;
 import butterknife.BindView;

@@ -14,7 +14,6 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.corroy.mathieu.go4lunch.Models.Helper.User;
@@ -23,16 +22,9 @@ import com.corroy.mathieu.go4lunch.R;
 import com.corroy.mathieu.go4lunch.Views.PagerAdapter;
 import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.maps.model.LatLngBounds;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 import butterknife.BindView;
 
@@ -57,10 +49,11 @@ public class MainScreenActivity extends BaseActivity implements NavigationView.O
     // FOR DATA
     private static final int SIGN_OUT_TASK = 10;
     public static final String ID = "ID";
+    private static final String GET_RESTAURANT_ID = "restaurantId";
 
     @Override
     public int getFragmentLayout() {
-        return R.layout.activity_first_screen;
+        return R.layout.activity_main_screen;
     }
 
     @Override
@@ -99,13 +92,13 @@ public class MainScreenActivity extends BaseActivity implements NavigationView.O
             case R.id.yourLunch:
                 UserHelper.getBookingRestaurant(UserHelper.getCurrentUser().getUid()).addOnCompleteListener(task -> {
                     if(task.isSuccessful()) {
-                        String restaurantId = task.getResult().getString("restaurantId");
+                        String restaurantId = task.getResult().getString(GET_RESTAURANT_ID);
                         if (restaurantId != null) {
                             Intent intent = new Intent(this, RestaurantActivity.class);
                             intent.putExtra(ID, restaurantId);
                             startActivity(intent);
                         } else {
-                            Toast.makeText(this, "No restaurant booked", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(this, getResources().getString(R.string.no_restaurant), Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
@@ -194,8 +187,8 @@ public class MainScreenActivity extends BaseActivity implements NavigationView.O
                 String username = TextUtils.isEmpty(currentUser.getUsername()) ?
                         getResources().getString(R.string.no_username_found) : currentUser.getUsername();
                 nameTextView.setText(username);
-            });
-                }
+                });
+            }
         }
 
     // -----------------

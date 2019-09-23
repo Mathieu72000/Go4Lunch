@@ -15,8 +15,6 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import com.corroy.mathieu.go4lunch.Controller.MainScreenActivity;
-import com.corroy.mathieu.go4lunch.Models.Helper.User;
-import com.corroy.mathieu.go4lunch.Models.Helper.UserHelper;
 import com.corroy.mathieu.go4lunch.Models.NearbySearch.Google;
 import com.corroy.mathieu.go4lunch.Models.NearbySearch.NearbyResult;
 import com.corroy.mathieu.go4lunch.R;
@@ -36,7 +34,6 @@ import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRe
 import com.google.android.libraries.places.api.net.PlacesClient;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.reactivex.observers.DisposableObserver;

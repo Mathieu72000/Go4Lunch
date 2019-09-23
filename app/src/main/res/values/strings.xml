@@ -10,6 +10,10 @@
     <string name="facebook_application_id" translatable="false">335354017332870</string>
     <string name="facebook_login_protocol_scheme" translatable="false">tools:ignore="UnusedResources">fb335354017332870</string>
 
+    <!-- TWITTER STRINGS -->
+    <string name="twitter_consumer_key" translatable="false">oQmmnyuEkZe2sajg7oXWsIIfb</string>
+    <string name="twitter_consumer_secret" translatable="false">K4e88lQwGqyEPJKo8YZrC8N66pXiQ6UI4If4QBcrkbay6Je2K8</string>
+
     <!-- BOTTOM NAVIGATION VIEW -->
     <string name="map_view" translatable="true">Map View</string>
     <string name="list_view" translatable="true">List View</string>
@@ -56,4 +60,7 @@
     <string name="no_username_found">No username found</string>
     <string name="im_hungry" translatable="false">I\'m Hungry!</string>
     <string name="restaurant_mates_number">(%1$d)</string>
+    <string name="login_password">Login / Password</string>
+    <string name="sign_in_with_twitter">Sign in with Twitter</string>
+    <string name="no_restaurant">No restaurant booked</string>
 </resources>
