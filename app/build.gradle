@@ -79,6 +79,8 @@ dependencies {
     implementation 'com.google.android.gms:play-services-location:17.0.0'
     implementation 'com.google.android.libraries.places:places:2.0.0'
 
+    // CUSTOM TABS
+    implementation 'androidx.browser:browser:1.0.0'
 
     // For developers using AndroidX in their applications // EASY PERMISSIONS
     implementation 'pub.devrel:easypermissions:2.0.1'

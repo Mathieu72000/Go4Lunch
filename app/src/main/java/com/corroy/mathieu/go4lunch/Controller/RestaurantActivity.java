@@ -3,6 +3,8 @@ package com.corroy.mathieu.go4lunch.Controller;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+
+import androidx.browser.customtabs.CustomTabsIntent;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
@@ -12,6 +14,7 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.corroy.mathieu.go4lunch.Models.Details.Details;
 import com.corroy.mathieu.go4lunch.Models.Details.Result;
 import com.corroy.mathieu.go4lunch.Models.Helper.User;
@@ -129,13 +132,27 @@ public class RestaurantActivity extends BaseActivity {
         }
 
         // Get the restaurant picture
-        if (result.getPhotos().get(0).getPhotoReference() != null){
+        if (!(result.getPhotos() == null)){
+            if (!(result.getPhotos().isEmpty())){
+                Glide.with(this)
+                        .load(PICTURE_URL + result.getPhotos().get(0).getPhotoReference()+ "&key=AIzaSyDXI74hOiHLi4l2vhUEs23260f055xyXvI")
+                        .into(restaurantImageView);
+            }
+        }else{
             Glide.with(this)
-                    .load(PICTURE_URL + result.getPhotos().get(0).getPhotoReference())
+                    .load(R.drawable.nopicture)
+                    .apply(RequestOptions.centerCropTransform())
                     .into(restaurantImageView);
         }
         this.restoreLikeButton();
         this.restoreGoButton();
+    }
+
+    private void configureCustomTabs(){
+        String url = result.getWebsite();
+        CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
+        CustomTabsIntent customTabsIntent = builder.build();
+        customTabsIntent.launchUrl(this, Uri.parse(url));
     }
 
     // --------------
@@ -184,8 +201,9 @@ public class RestaurantActivity extends BaseActivity {
     @OnClick(R.id.activity_restaurant_button_website)
     public void onClickWeb() {
         if (result.getWebsite() != null) {
-            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(result.getWebsite()));
-            startActivity(browserIntent);
+            this.configureCustomTabs();
+//            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(result.getWebsite()));
+//            startActivity(browserIntent);
         } else {
             Toast.makeText(this, getResources().getString(R.string.website_unavailable), Toast.LENGTH_SHORT).show();
         }
