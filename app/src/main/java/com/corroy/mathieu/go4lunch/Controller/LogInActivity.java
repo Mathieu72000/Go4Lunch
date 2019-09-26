@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import android.widget.Toast;
+
+import com.corroy.mathieu.go4lunch.Models.Helper.User;
 import com.corroy.mathieu.go4lunch.Models.Helper.UserHelper;
 import com.corroy.mathieu.go4lunch.R;
 import com.firebase.ui.auth.AuthUI;
@@ -130,7 +132,7 @@ public class LogInActivity extends BaseActivity {
                     .createSignInIntentBuilder()
                     .setAvailableProviders(
                             Collections.singletonList(new AuthUI.IdpConfig.EmailBuilder().build()))
-                    .setIsSmartLockEnabled(false, true)
+                    .setIsSmartLockEnabled(false, false)
                     .build(), RC_SIGN_IN);
     }
 
@@ -169,10 +171,25 @@ public class LogInActivity extends BaseActivity {
             String urlPicture = (UserHelper.getCurrentUser().getPhotoUrl() != null) ? UserHelper.getCurrentUser().getPhotoUrl().toString() : null;
             String username = UserHelper.getCurrentUser().getDisplayName();
             String uid = UserHelper.getCurrentUser().getUid();
-            //todo Erreur de re créaction
-            UserHelper.createUser(uid, username, urlPicture)
-                    .addOnFailureListener(e -> Toast.makeText(getApplicationContext(), getResources().getString(R.string.error_during_creating), Toast.LENGTH_SHORT).show());
+
+            UserHelper.getUser(UserHelper.getCurrentUser().getUid()).addOnCompleteListener(task -> {
+                if(task.isSuccessful()){
+                    User currentUser = task.getResult().toObject(User.class);
+                if(currentUser != null && UserHelper.getCurrentUser().getUid().equals(currentUser.getUid())){
+                    // todo Mettre à jour le nom et la photo
+                    this.startActivityIfLogged();
+                } else {
+                    UserHelper.createUser(uid, username, urlPicture).addOnCompleteListener(task1 -> {
+                    this.startActivityIfLogged();
+                    })
+                        .addOnFailureListener(e -> Toast.makeText(getApplicationContext(), getResources().getString(R.string.error_during_creating), Toast.LENGTH_SHORT).show());
+                     }
+
+                }
+            });
+
         }
+
     }
 
     // - Method that handles response after SignIn Activity close
@@ -184,7 +201,7 @@ public class LogInActivity extends BaseActivity {
             if (resultCode == RESULT_OK) { // SUCCESS
                 showSnackBar(this.coordinatorLayout, getResources().getString(R.string.connexion_success));
                 this.createUserFireStore();
-                this.startActivityIfLogged();
+
             } else { // ERRORS
                 if (response == null) {
                     showSnackBar(this.coordinatorLayout, getResources().getString(R.string.authentication_canceled));

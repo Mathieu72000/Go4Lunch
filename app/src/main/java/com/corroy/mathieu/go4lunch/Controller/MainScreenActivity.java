@@ -183,7 +183,6 @@ public class MainScreenActivity extends BaseActivity implements NavigationView.O
 
             UserHelper.getUser(UserHelper.getCurrentUser().getUid()).addOnSuccessListener(documentSnapshot -> {
                 User currentUser = documentSnapshot.toObject(User.class);
-                assert currentUser != null;
                 String username = TextUtils.isEmpty(currentUser.getUsername()) ?
                         getResources().getString(R.string.no_username_found) : currentUser.getUsername();
                 nameTextView.setText(username);
