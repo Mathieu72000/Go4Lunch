@@ -19,9 +19,6 @@ public class SettingsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_settings);
         ButterKnife.bind(this);
 
-        mSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
-
-        });
     }
 
     @OnClick(R.id.back_arrow_notification)

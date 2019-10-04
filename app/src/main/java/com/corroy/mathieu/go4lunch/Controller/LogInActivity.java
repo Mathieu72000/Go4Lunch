@@ -176,7 +176,7 @@ public class LogInActivity extends BaseActivity {
                 if(task.isSuccessful()){
                     User currentUser = task.getResult().toObject(User.class);
                 if(currentUser != null && UserHelper.getCurrentUser().getUid().equals(currentUser.getUid())){
-                    // todo Mettre à jour le nom et la photo
+                    UserHelper.updateUser(uid, username, urlPicture);
                     this.startActivityIfLogged();
                 } else {
                     UserHelper.createUser(uid, username, urlPicture).addOnCompleteListener(task1 -> {

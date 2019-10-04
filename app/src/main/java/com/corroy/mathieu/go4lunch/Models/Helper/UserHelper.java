@@ -83,6 +83,10 @@ public class UserHelper {
         return UserHelper.getUsersCollection().document(userId).update("joinedRestaurant", joinedRestaurant, "restaurantId", restaurantId);
     }
 
+    public static Task<Void> updateUser(String uid, String username, String urlPicture){
+        return UserHelper.getUsersCollection().document(uid).update("username", username, "urlPicture", urlPicture);
+    }
+
     // ---- DELETE ---
 
     public static Boolean deleteLike(String restaurantId, String userId){

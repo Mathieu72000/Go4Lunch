@@ -13,9 +13,15 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
+        <!-- NOTIFICATION SERVICE -->
+        <service android:name=".Utils.NotificationService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+            </intent-filter>
+        </service>
+
         <activity android:name=".Controller.SettingsActivity"></activity>
         <activity android:name=".Controller.RestaurantActivity" />
-
         <activity android:name=".Controller.MainScreenActivity" />
         <activity android:name=".Controller.LogInActivity">
             <intent-filter>

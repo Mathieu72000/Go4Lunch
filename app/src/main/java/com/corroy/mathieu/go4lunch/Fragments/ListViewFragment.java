@@ -43,10 +43,8 @@ public class ListViewFragment extends BaseFragment {
     @BindView(R.id.listview_recyclerview)
     RecyclerView recyclerView;
     private String position;
-    private List<NearbyResult> nearbyResultList;
-    private RestaurantsAdapter listViewAdapter;
-    private AutoCompleteTextView autoCompleteTextView;
-    private ArrayAdapter<String> adapter;
+    public List<NearbyResult> nearbyResultList;
+    public RestaurantsAdapter listViewAdapter;
 
     public static ListViewFragment newInstance() {
         return new ListViewFragment();
@@ -71,43 +69,7 @@ public class ListViewFragment extends BaseFragment {
         this.executeHttpRequestWithRetrofit();
         setHasOptionsMenu(true);
 
-        Toolbar toolbar = view.findViewById(R.id.first_screen_toolbar);
 
-        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
-        autoCompleteTextView = getActivity().findViewById(R.id.autoCompleteTextView);
-
-        autoCompleteTextView.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                if(s.length() > 0){
-                    configureAutoPredictions(s);
-                } else {
-                    listViewAdapter.refreshAdapter(nearbyResultList);
-                }
-
-            }
-        });
-
-        autoCompleteTextView.setOnItemClickListener((parent, view1, position, id) -> {
-            String item = adapter.getItem(position);
-            List<NearbyResult> nearbyResultListFilter = new ArrayList<>();
-            for (NearbyResult nearbyResult : nearbyResultList) {
-                if(nearbyResult.getName().equals(item)){
-                    nearbyResultListFilter.add(nearbyResult);
-                }
-            }
-            listViewAdapter.refreshAdapter(nearbyResultListFilter);
-        });
         return view;
     }
 
@@ -148,34 +110,12 @@ public class ListViewFragment extends BaseFragment {
         });
     }
 
-    private void configureAutoPredictions(Editable s) {
-        PlacesClient placesClient = Places.createClient(getContext());
+    // Method
+    public void displayAllRestaurants() {
+        listViewAdapter.refreshAdapter(nearbyResultList);
+    }
 
-        AutocompleteSessionToken token = AutocompleteSessionToken.newInstance();
-        LatLngBounds latLngBounds = ((MainScreenActivity) getActivity()).getLatLngBounds();
-        RectangularBounds bounds = RectangularBounds.newInstance(latLngBounds.southwest, latLngBounds.northeast);
-
-        FindAutocompletePredictionsRequest request = FindAutocompletePredictionsRequest.builder()
-                .setLocationRestriction(bounds)
-                .setCountry("fr")
-                .setQuery(s.toString())
-                .setTypeFilter(TypeFilter.ESTABLISHMENT)
-                .setSessionToken(token)
-                .build();
-
-        placesClient.findAutocompletePredictions(request).addOnSuccessListener((response) -> {
-            List<String> restaurantList = new ArrayList<>();
-
-            for (AutocompletePrediction prediction : response.getAutocompletePredictions()) {
-                if (prediction.getPlaceTypes().contains(Place.Type.RESTAURANT)) {
-
-                    restaurantList.add(prediction.getPrimaryText(null).toString());
-
-                }
-            }
-            adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_dropdown_item_1line, restaurantList);
-
-            autoCompleteTextView.setAdapter(adapter);
-        });
+    public void refreshRestaurants(List<NearbyResult> nearbyResultListFilter) {
+        listViewAdapter.refreshAdapter(nearbyResultListFilter);
     }
 }
