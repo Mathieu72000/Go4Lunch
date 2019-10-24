@@ -16,6 +16,8 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import com.corroy.mathieu.go4lunch.Controller.MainScreenActivity;
 import com.corroy.mathieu.go4lunch.Controller.RestaurantActivity;
+import com.corroy.mathieu.go4lunch.Models.Helper.User;
+import com.corroy.mathieu.go4lunch.Models.Helper.UserHelper;
 import com.corroy.mathieu.go4lunch.Models.NearbySearch.Google;
 import com.corroy.mathieu.go4lunch.Models.NearbySearch.NearbyResult;
 import com.corroy.mathieu.go4lunch.R;
@@ -30,6 +32,8 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -145,21 +149,21 @@ public class MapViewFragment extends BaseFragment implements OnMapReadyCallback,
     }
 
     // Add markers for each result on Gmap
-    private void updateGoogleUi(){
+    private void updateGoogleUi() {
         int height = 90;
         int width = 90;
-        BitmapDrawable bitmapDrawable = (BitmapDrawable)getResources().getDrawable(R.drawable.ic_restaurant_marker_orange);
-        Bitmap bitmap = bitmapDrawable.getBitmap();
-        Bitmap iconSize = Bitmap.createScaledBitmap(bitmap, width, height, false);
-        for(NearbyResult mResult : nearbyResultList){
-            LatLng restau = new LatLng(mResult.getGeometry().getLocation().getLat(), mResult.getGeometry().getLocation().getLng());
-            Marker marker = mGoogleMap.addMarker(new MarkerOptions().position(restau)
-                    .title(mResult.getName())
-                    .snippet(mResult.getVicinity())
-                    .icon(BitmapDescriptorFactory.fromBitmap(iconSize)));
-            marker.setTag(mResult);
+            BitmapDrawable bitmapDrawable = (BitmapDrawable) getResources().getDrawable(R.drawable.ic_restaurant_marker_orange);
+            Bitmap bitmap = bitmapDrawable.getBitmap();
+            Bitmap iconSize = Bitmap.createScaledBitmap(bitmap, width, height, false);
+            for (NearbyResult mResult : nearbyResultList) {
+                LatLng restau = new LatLng(mResult.getGeometry().getLocation().getLat(), mResult.getGeometry().getLocation().getLng());
+                Marker marker = mGoogleMap.addMarker(new MarkerOptions().position(restau)
+                        .title(mResult.getName())
+                        .snippet(mResult.getVicinity())
+                        .icon(BitmapDescriptorFactory.fromBitmap(iconSize)));
+                marker.setTag(mResult);
+            }
         }
-    }
 
     // Call when the camera has ended
     // Get the latLngBounds from the camera and set it into a MainScreenActivity variable
