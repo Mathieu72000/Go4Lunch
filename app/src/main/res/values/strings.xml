@@ -63,4 +63,10 @@
     <string name="login_password">Login / Password</string>
     <string name="sign_in_with_twitter">Sign in with Twitter</string>
     <string name="no_restaurant">No restaurant booked</string>
+    <string name="setting">Settings</string>
+    <string name="remind_me_where_i_eat">Remember where I eat every day at lunchtime</string>
+    <string name="off">off</string>
+    <string name="on">on</string>
+    <string name="search_a_restaurant">Search a restaurant</string>
+    <string name="notification">You eat at %1$s where is at %2$s with %3$s</string>
 </resources>

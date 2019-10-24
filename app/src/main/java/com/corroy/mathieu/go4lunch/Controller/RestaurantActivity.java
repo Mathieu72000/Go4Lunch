@@ -3,7 +3,6 @@ package com.corroy.mathieu.go4lunch.Controller;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-
 import androidx.browser.customtabs.CustomTabsIntent;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -57,7 +56,9 @@ public class RestaurantActivity extends BaseActivity {
     private static final String JOIN = "JOIN";
     private static final String NO_LONGER_JOIN = "DISJOINT";
     private static final String TEL = "tel";
+    private static final String API_KEY = "&key=AIzaSyDXI74hOiHLi4l2vhUEs23260f055xyXvI";
     private static final String PICTURE_URL = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=200&maxheight=150&key=AIzaSyDXI74hOiHLi4l2vhUEs23260f055xyXvI&photoreference=";
+    private static final String GET_RESTAURANT_ID = "restaurantId";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -135,7 +136,7 @@ public class RestaurantActivity extends BaseActivity {
         if (!(result.getPhotos() == null)){
             if (!(result.getPhotos().isEmpty())){
                 Glide.with(this)
-                        .load(PICTURE_URL + result.getPhotos().get(0).getPhotoReference()+ "&key=AIzaSyDXI74hOiHLi4l2vhUEs23260f055xyXvI")
+                        .load(PICTURE_URL + result.getPhotos().get(0).getPhotoReference()+ API_KEY)
                         .into(restaurantImageView);
             }
         }else{
@@ -171,7 +172,7 @@ public class RestaurantActivity extends BaseActivity {
     }
 
     public void joinTheRestaurant(){
-        UserHelper.updateUserRestaurant(UserHelper.getCurrentUser().getUid(), result.getName(), result.getPlaceId());
+        UserHelper.updateUserRestaurant(UserHelper.getCurrentUser().getUid(), result.getName(), result.getPlaceId(), result.getVicinity());
         floatButton.setImageDrawable(getResources().getDrawable(R.drawable.validate));
         floatButton.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
         floatButton.setColorFilter(getResources().getColor(R.color.colorTransparent));
@@ -265,7 +266,7 @@ public class RestaurantActivity extends BaseActivity {
     private void restoreGoButton() {
         UserHelper.getBookingRestaurant(UserHelper.getCurrentUser().getUid()).addOnCompleteListener(task -> {
             if(task.isSuccessful()){
-                String restaurantId = task.getResult().getString("restaurantId");
+                String restaurantId = task.getResult().getString(GET_RESTAURANT_ID);
                 if(restaurantId != null && restaurantId.equals(result.getPlaceId())){
                     floatButton.setImageDrawable(getResources().getDrawable(R.drawable.validate));
                     floatButton.setScaleType(ImageView.ScaleType.CENTER_INSIDE);

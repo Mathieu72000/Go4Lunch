@@ -19,8 +19,9 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT"/>
             </intent-filter>
         </service>
-
-        <activity android:name=".Controller.SettingsActivity"></activity>
+        <activity android:name=".Controller.SettingsActivity"
+            android:label="@string/setting">
+        </activity>
         <activity android:name=".Controller.RestaurantActivity" />
         <activity android:name=".Controller.MainScreenActivity" />
         <activity android:name=".Controller.LogInActivity">
@@ -31,6 +32,7 @@
             </intent-filter>
         </activity>
 
+        <meta-data android:name="batch_opted_out_by_default" android:value="false" />
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />

@@ -12,6 +12,7 @@ import androidx.appcompat.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -45,6 +46,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import butterknife.BindView;
+import butterknife.OnClick;
 
 public class MainScreenActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -148,16 +150,23 @@ public class MainScreenActivity extends BaseActivity implements NavigationView.O
             switch (id) {
                 case R.id.list_view:
                     displayFragments(ListViewFragment.newInstance());
+                    cleanAutoCompleteTextView();
                     break;
                 case R.id.workmates:
                     displayFragments(WorkmatesFragment.newInstance());
+                    cleanAutoCompleteTextView();
                     break;
                 default:
                     displayFragments(MapViewFragment.newInstance());
+                    cleanAutoCompleteTextView();
                     break;
             }
             return true;
         });
+    }
+
+    private void cleanAutoCompleteTextView(){
+        autoCompleteTextView.setText("");
     }
 
     // This method show and replace fragments after touching the bottom navigation view buttons
@@ -347,9 +356,25 @@ public class MainScreenActivity extends BaseActivity implements NavigationView.O
 
                 }
             }
-            adapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, restaurantList);
+            adapter = new ArrayAdapter<>(this, R.layout.custom_textview, restaurantList);
 
             autoCompleteTextView.setAdapter(adapter);
         });
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        MenuItem menuItem = menu.add(Menu.NONE, Menu.NONE, Menu.NONE, R.string.search_a_restaurant);
+        menuItem.setIcon(R.drawable.searchicon);
+        menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+        menuItem.setOnMenuItemClickListener(item -> {
+            if(autoCompleteTextView.getVisibility() == View.INVISIBLE){
+                autoCompleteTextView.setVisibility(View.VISIBLE);
+            } else {
+                autoCompleteTextView.setVisibility(View.INVISIBLE);
+            }
+            return true;
+        });
+        return super.onPrepareOptionsMenu(menu);
     }
 }

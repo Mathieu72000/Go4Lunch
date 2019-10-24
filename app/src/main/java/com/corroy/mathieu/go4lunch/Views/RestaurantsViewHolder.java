@@ -27,7 +27,7 @@ public class RestaurantsViewHolder extends RecyclerView.ViewHolder {
     @BindView(R.id.item_textview_name)
     TextView restaurantName;
     @BindView(R.id.item_textview_address)
-    TextView restaurantAdress;
+    TextView restaurantAddress;
     @BindView(R.id.item_textview_opening)
     TextView restaurantOpenClose;
     @BindView(R.id.item_textview_distance)
@@ -42,6 +42,7 @@ public class RestaurantsViewHolder extends RecyclerView.ViewHolder {
     TextView textViewMates;
 
     private float[] distanceResults = new float[3];
+    private static final String GET_UID = "uid";
 
     public RestaurantsViewHolder(View itemView) {
         super(itemView);
@@ -53,7 +54,7 @@ public class RestaurantsViewHolder extends RecyclerView.ViewHolder {
         // ------------- NAME ------------
         this.restaurantName.setText(result.getName());
         // ------------- ADDRESS ----------
-        this.restaurantAdress.setText(result.getVicinity());
+        this.restaurantAddress.setText(result.getVicinity());
         // ------------ RATING BAR ----------
         displayRating(result);
         // ----------- DISTANCE -----------
@@ -94,7 +95,7 @@ public class RestaurantsViewHolder extends RecyclerView.ViewHolder {
               if(task.getResult().size() > 0){
                   List<String> resultList = new ArrayList<>();
                   for (DocumentSnapshot document : task.getResult().getDocuments()) {
-                      String uid = document.getString("uid");
+                      String uid = document.getString(GET_UID);
                       if(!uid.equals(UserHelper.getCurrentUser().getUid()))
                       resultList.add(uid);
                   }

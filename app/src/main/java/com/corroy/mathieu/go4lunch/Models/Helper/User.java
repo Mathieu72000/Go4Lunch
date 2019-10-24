@@ -55,10 +55,6 @@ public class User implements Parcelable {
         return joinedRestaurant;
     }
 
-    public String getRestaurantId() {
-        return restaurantId;
-    }
-
     // --- SETTERS ---
 
     public void setJoinedRestaurant(String joinedRestaurant) {

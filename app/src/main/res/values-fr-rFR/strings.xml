@@ -7,7 +7,7 @@
     <string name="list_view">Liste</string>
     <string name="workmates">Collègues</string>
     <string name="logout">DÉCONNEXION</string>
-    <string name="settings">PARAMETRES</string>
+    <string name="settings">PARAMÈTRES</string>
     <string name="yourLunch">VOTRE DÉJEUNER</string>
     <string name="navigation_drawer_open">Ouvrir navigation drawer</string>
     <string name="navigation_drawer_close">Fermer navigation drawer</string>
@@ -43,4 +43,10 @@
     <string name="login_password">Identifiant / Mot de passe</string>
     <string name="sign_in_with_twitter">Connexion à Twitter</string>
     <string name="no_restaurant">Vous ne rejoignez aucun restaurant !</string>
+    <string name="setting">Paramètres</string>
+    <string name="remind_me_where_i_eat">Me rappeler où je mange chaque midi</string>
+    <string name="off">Désactiver</string>
+    <string name="on">Activer</string>
+    <string name="search_a_restaurant">Rechercher un restaurant</string>
+    <string name="notification">Vous mangez à %1$s qui se trouve au %2$s avec %3$s</string>
 </resources>

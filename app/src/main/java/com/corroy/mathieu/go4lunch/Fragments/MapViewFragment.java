@@ -168,7 +168,7 @@ public class MapViewFragment extends BaseFragment implements OnMapReadyCallback,
             isFirstLifeCycle = false;
             for (NearbyResult mResult : nearbyResultListFilter) {
                 LatLng restaurant = new LatLng(mResult.getGeometry().getLocation().getLat(), mResult.getGeometry().getLocation().getLng());
-                // todo retravailler la méthode pour récupérer l'ensemble des utilisateurs
+                // todo La méthode ne doit pas afficher l'utilisateur courant en vert
                 UserHelper.getRestaurant(mResult.getPlaceId()).addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         markerOptions.position(restaurant);

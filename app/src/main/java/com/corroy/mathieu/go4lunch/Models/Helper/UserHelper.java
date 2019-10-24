@@ -9,7 +9,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.SetOptions;
 import java.util.ArrayList;
@@ -25,7 +25,11 @@ public class UserHelper {
 
     private static final String COLLECTION_USERS = "users";
     private static final String COLLECTION_LIKED = "restaurantLike";
-    private static final String COLLECTION_RESTAURANTID = "restaurantId";
+    private static final String GET_RESTAURANT_ID = "restaurantId";
+    private static final String GET_JOINED_RESTAURANT = "joinedRestaurant";
+    private static final String GET_VICINITY = "vicinity";
+    private static final String GET_URL_PICTURE = "urlPicture";
+    private static final String GET_USERNAME = "username";
 
     // --- COLLECTION REFERENCE ---
 
@@ -69,22 +73,27 @@ public class UserHelper {
         return UserHelper.getLikedCollection().whereEqualTo(uid, true).get();
     }
 
+    // todo retravailler cette méthode
     public static Task<QuerySnapshot> getRestaurant(String restaurantId){
-        return UserHelper.getUsersCollection().whereEqualTo("restaurantId", restaurantId).get();
+        return UserHelper.getUsersCollection().whereEqualTo(GET_RESTAURANT_ID, restaurantId).get();
     }
 
     public static Task<DocumentSnapshot> getBookingRestaurant(String uid){
         return UserHelper.getUsersCollection().document(uid).get();
     }
 
+    public static Task<QuerySnapshot> getAllUsernames(){
+        return UserHelper.getUsersCollection().get();
+    }
+
     // --- UPDATE ---
 
-    public static Task<Void> updateUserRestaurant(String userId, String joinedRestaurant, String restaurantId){
-        return UserHelper.getUsersCollection().document(userId).update("joinedRestaurant", joinedRestaurant, "restaurantId", restaurantId);
+    public static Task<Void> updateUserRestaurant(String userId, String joinedRestaurant, String restaurantId, String vicinity){
+        return UserHelper.getUsersCollection().document(userId).update(GET_JOINED_RESTAURANT, joinedRestaurant, GET_RESTAURANT_ID, restaurantId, GET_VICINITY, vicinity);
     }
 
     public static Task<Void> updateUser(String uid, String username, String urlPicture){
-        return UserHelper.getUsersCollection().document(uid).update("username", username, "urlPicture", urlPicture);
+        return UserHelper.getUsersCollection().document(uid).update(GET_USERNAME, username, GET_URL_PICTURE, urlPicture);
     }
 
     // ---- DELETE ---
@@ -102,8 +111,9 @@ public class UserHelper {
 
     public static Task<Void> deleteUserRestaurant(String userId){
         Map<String, Object> update = new HashMap<>();
-        update.put("joinedRestaurant", FieldValue.delete());
-        update.put("restaurantId", FieldValue.delete());
+        update.put(GET_JOINED_RESTAURANT, FieldValue.delete());
+        update.put(GET_RESTAURANT_ID, FieldValue.delete());
+        update.put(GET_VICINITY, FieldValue.delete());
         return UserHelper.getUsersCollection().document(userId).update(update);
     }
 
@@ -115,7 +125,7 @@ public class UserHelper {
         List<User> users = new ArrayList<>();
         FirebaseFirestore.getInstance()
                 .collection(COLLECTION_USERS)
-                .whereEqualTo(COLLECTION_RESTAURANTID, result.getPlaceId())
+                .whereEqualTo(GET_RESTAURANT_ID, result.getPlaceId())
                 .get()
                 .addOnCompleteListener(task -> {
                     if(task.isSuccessful()){
@@ -143,7 +153,8 @@ public class UserHelper {
                         for(DocumentSnapshot documentSnapshot : myListOfDocuments){
                             User user = documentSnapshot.toObject(User.class);
                             if(!user.getUid().equals(getCurrentUser().getUid())){
-                                users.add(user);}
+                                users.add(user);
+                            }
                         }
                         onRequestListener.onResult(users);
                     }
