@@ -11,9 +11,6 @@ public class NearbyResult {
         @SerializedName("geometry")
         @Expose
         private Geometry geometry;
-        @SerializedName("icon")
-        @Expose
-        private String icon;
         @SerializedName("id")
         @Expose
         private String id;
@@ -32,30 +29,12 @@ public class NearbyResult {
         @SerializedName("rating")
         @Expose
         private double rating;
-        @SerializedName("reference")
-        @Expose
-        private String reference;
-        @SerializedName("types")
-        @Expose
-        private List<String> types = null;
         @SerializedName("vicinity")
         @Expose
         private String vicinity;
 
         public Geometry getGeometry() {
             return geometry;
-        }
-
-        public void setGeometry(Geometry geometry) {
-            this.geometry = geometry;
-        }
-
-        public String getIcon() {
-            return icon;
-        }
-
-        public void setIcon(String icon) {
-            this.icon = icon;
         }
 
         public String getId() {
@@ -78,55 +57,19 @@ public class NearbyResult {
             return openingHours;
         }
 
-        public void setOpeningHours(OpeningHours openingHours) {
-            this.openingHours = openingHours;
-        }
-
         public List<Photo> getPhotos() {
             return photos;
-        }
-
-        public void setPhotos(List<Photo> photos) {
-            this.photos = photos;
         }
 
         public String getPlaceId() {
             return placeId;
         }
 
-        public void setPlaceId(String placeId) {
-            this.placeId = placeId;
-        }
-
-        public String getReference() {
-            return reference;
-        }
-
-        public void setReference(String reference) {
-            this.reference = reference;
-        }
-
-        public List<String> getTypes() {
-            return types;
-        }
-
-        public void setTypes(List<String> types) {
-            this.types = types;
-        }
-
         public String getVicinity() {
             return vicinity;
         }
 
-        public void setVicinity(String vicinity) {
-            this.vicinity = vicinity;
-        }
-
         public double getRating() {
         return rating;
-    }
-
-        public void setRating(double rating) {
-        this.rating = rating;
     }
 }

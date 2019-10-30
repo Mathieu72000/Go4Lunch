@@ -3,15 +3,19 @@ package com.corroy.mathieu.go4lunch.Controller;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.browser.customtabs.CustomTabsIntent;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.corroy.mathieu.go4lunch.Models.Details.Details;
 import com.corroy.mathieu.go4lunch.Models.Details.Result;
 import com.corroy.mathieu.go4lunch.Models.Helper.User;
@@ -21,9 +25,10 @@ import com.corroy.mathieu.go4lunch.Utils.Go4LunchStreams;
 import com.corroy.mathieu.go4lunch.Views.WorkmatesAdapter;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -32,6 +37,13 @@ import io.reactivex.observers.DisposableObserver;
 
 public class RestaurantActivity extends BaseActivity {
 
+    private static final String GET_ID = "ID";
+    private static final String JOIN = "JOIN";
+    private static final String NO_LONGER_JOIN = "DISJOINT";
+    private static final String TEL = "tel";
+    private static final String API_KEY = "&key=AIzaSyDXI74hOiHLi4l2vhUEs23260f055xyXvI";
+    private static final String PICTURE_URL = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=200&maxheight=150&key=AIzaSyDXI74hOiHLi4l2vhUEs23260f055xyXvI&photoreference=";
+    private static final String GET_RESTAURANT_ID = "restaurantId";
     @BindView(R.id.activity_restaurant_restaurant_picture)
     ImageView restaurantImageView;
     @BindView(R.id.activity_restaurant_address)
@@ -48,18 +60,9 @@ public class RestaurantActivity extends BaseActivity {
     FloatingActionButton floatButton;
     private Disposable disposable;
     private String placeId;
-    private String picture;
     private List<User> userList;
     private Result result;
     private WorkmatesAdapter workmatesAdapter;
-    private static final String GET_ID = "ID";
-    private static final String GET_PICTURE = "PICTURE";
-    private static final String JOIN = "JOIN";
-    private static final String NO_LONGER_JOIN = "DISJOINT";
-    private static final String TEL = "tel";
-    private static final String COLLECTION_NAME = "users";
-    private static final String COLLECTION_FIELD = "joinedRestaurant";
-    private static final String PICTURE_URL = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=200&maxheight=150&key=AIzaSyDXI74hOiHLi4l2vhUEs23260f055xyXvI&photoreference=";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,7 +70,6 @@ public class RestaurantActivity extends BaseActivity {
         ButterKnife.bind(this);
 
         placeId = getIntent().getStringExtra(GET_ID);
-        picture = getIntent().getStringExtra(GET_PICTURE);
 
         this.configureRecyclerView();
         this.executeHttpRequestWithRetrofit();
@@ -98,7 +100,10 @@ public class RestaurantActivity extends BaseActivity {
             @Override
             public void onNext(Details details) {
                 result = details.getResult();
-                executeFireBaseRequest();
+                UserHelper.getRestaurantInfo(result, userList -> {
+                    RestaurantActivity.this.userList = userList;
+                    workmatesAdapter.refreshAdapter(userList);
+                });
             }
 
             @Override
@@ -132,34 +137,27 @@ public class RestaurantActivity extends BaseActivity {
         }
 
         // Get the restaurant picture
-        if (picture != null){
+        if (!(result.getPhotos() == null)){
+            if (!(result.getPhotos().isEmpty())){
+                Glide.with(this)
+                        .load(PICTURE_URL + result.getPhotos().get(0).getPhotoReference()+ API_KEY)
+                        .into(restaurantImageView);
+            }
+        }else{
             Glide.with(this)
-                    .load(PICTURE_URL + picture)
+                    .load(R.drawable.nopicture)
+                    .apply(RequestOptions.centerCropTransform())
                     .into(restaurantImageView);
         }
+        this.restoreLikeButton();
+        this.restoreGoButton();
     }
 
-    // Execute FireBase request to get the collection
-    private void executeFireBaseRequest(){
-        FirebaseFirestore.getInstance()
-                .collection(COLLECTION_NAME)
-                .whereEqualTo(COLLECTION_FIELD, result.getName())
-                .get()
-                .addOnCompleteListener(task -> {
-                    if(task.isSuccessful()){
-                        List<DocumentSnapshot> myListOfDocuments = task.getResult().getDocuments();
-                        for(DocumentSnapshot documentSnapshot : myListOfDocuments){
-                            UserHelper.getUser(documentSnapshot.getId()).addOnSuccessListener(documentSnapshot1 -> {
-                                User user = documentSnapshot1.toObject(User.class);
-                                user.setJoinedRestaurant(result.getName());
-                                user.setRestaurantId(result.getPlaceId());
-                                if(!user.getUid().equals(getCurrentUser().getUid())){
-                                    userList.add(user);}
-                                workmatesAdapter.notifyDataSetChanged();
-                            });
-                        }
-                    }
-                });
+    private void configureCustomTabs(){
+        String url = result.getWebsite();
+        CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
+        CustomTabsIntent customTabsIntent = builder.build();
+        customTabsIntent.launchUrl(this, Uri.parse(url));
     }
 
     // --------------
@@ -178,7 +176,7 @@ public class RestaurantActivity extends BaseActivity {
     }
 
     public void joinTheRestaurant(){
-        UserHelper.updateUserRestaurant(getCurrentUser().getUid(), result.getName(), result.getPlaceId());
+        UserHelper.updateUserRestaurant(UserHelper.getCurrentUser().getUid(), result.getName(), result.getPlaceId(), result.getVicinity());
         floatButton.setImageDrawable(getResources().getDrawable(R.drawable.validate));
         floatButton.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
         floatButton.setColorFilter(getResources().getColor(R.color.colorTransparent));
@@ -187,7 +185,7 @@ public class RestaurantActivity extends BaseActivity {
     }
 
     public void disjointTheRestaurant(){
-        UserHelper.deleteUserRestaurant(getCurrentUser().getUid());
+        UserHelper.deleteUserRestaurant(UserHelper.getCurrentUser().getUid());
         floatButton.setImageDrawable(getResources().getDrawable(R.drawable.pic_logo_go4lunch_512x512));
         floatButton.setColorFilter(getResources().getColor(R.color.toolbar_darker));
         Toast.makeText(this, getResources().getString(R.string.no_longer_join), Toast.LENGTH_SHORT).show();
@@ -208,8 +206,9 @@ public class RestaurantActivity extends BaseActivity {
     @OnClick(R.id.activity_restaurant_button_website)
     public void onClickWeb() {
         if (result.getWebsite() != null) {
-            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(result.getWebsite()));
-            startActivity(browserIntent);
+            this.configureCustomTabs();
+//            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(result.getWebsite()));
+//            startActivity(browserIntent);
         } else {
             Toast.makeText(this, getResources().getString(R.string.website_unavailable), Toast.LENGTH_SHORT).show();
         }
@@ -227,8 +226,8 @@ public class RestaurantActivity extends BaseActivity {
     }
 
     private void likeTheRestaurant(){
-        if(getCurrentUser() != null) {
-            UserHelper.createLike(result.getPlaceId(), getCurrentUser().getUid()).addOnCompleteListener(task -> {
+        if(UserHelper.getCurrentUser() != null) {
+            UserHelper.createLike(result.getPlaceId(), UserHelper.getCurrentUser().getUid()).addOnCompleteListener(task -> {
                if(task.isSuccessful()){
                    Toast.makeText(this, getResources().getString(R.string.like_restaurant), Toast.LENGTH_SHORT).show();
                    likeBtn.setText(getResources().getString(R.string.UNLIKE));
@@ -240,13 +239,51 @@ public class RestaurantActivity extends BaseActivity {
     }
 
     private void dislikeThisRestaurant(){
-        if(getCurrentUser() != null){
-            UserHelper.deleteLike(result.getPlaceId(), getCurrentUser().getUid());
+        if(UserHelper.getCurrentUser() != null){
+            UserHelper.deleteLike(result.getPlaceId(), UserHelper.getCurrentUser().getUid());
             likeBtn.setText(getResources().getString(R.string.LIKE));
             Toast.makeText(this, getResources().getString(R.string.dislike_restaurant), Toast.LENGTH_SHORT).show();
         }else{
             Toast.makeText(this, getResources().getString(R.string.error_restaurant), Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void restoreLikeButton() {
+        UserHelper.restoreLike(UserHelper.getCurrentUser().getUid()).addOnCompleteListener(task -> {
+            if(task.isSuccessful()){
+                if(task.getResult().isEmpty()){
+                    likeBtn.setText(getResources().getString(R.string.LIKE));
+                } else {
+                    for (DocumentSnapshot restaurant : task.getResult()){
+                            if(result.getPlaceId().equals(restaurant.getId())){
+                            likeBtn.setText(getResources().getString(R.string.UNLIKE));
+                            break;
+                        } else {
+                            likeBtn.setText(getResources().getString(R.string.LIKE));
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    private void restoreGoButton() {
+        UserHelper.getBookingRestaurant(UserHelper.getCurrentUser().getUid()).addOnCompleteListener(task -> {
+            if(task.isSuccessful()){
+                String restaurantId = task.getResult().getString(GET_RESTAURANT_ID);
+                if(restaurantId != null && restaurantId.equals(result.getPlaceId())){
+                    floatButton.setImageDrawable(getResources().getDrawable(R.drawable.validate));
+                    floatButton.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+                    floatButton.setColorFilter(getResources().getColor(R.color.colorTransparent));
+                    floatButton.setTag(NO_LONGER_JOIN);
+                } else {
+                    floatButton.setImageDrawable(getResources().getDrawable(R.drawable.pic_logo_go4lunch_512x512));
+                    floatButton.setColorFilter(getResources().getColor(R.color.toolbar_darker));
+                    floatButton.setTag(JOIN);
+                }
+            }
+        });
+
     }
 
     // Dispose subscription

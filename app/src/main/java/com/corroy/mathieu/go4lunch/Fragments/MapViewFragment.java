@@ -7,16 +7,15 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.location.Location;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import com.corroy.mathieu.go4lunch.Controller.MainScreenActivity;
 import com.corroy.mathieu.go4lunch.Controller.RestaurantActivity;
-import com.corroy.mathieu.go4lunch.Models.Helper.User;
 import com.corroy.mathieu.go4lunch.Models.Helper.UserHelper;
 import com.corroy.mathieu.go4lunch.Models.NearbySearch.Google;
 import com.corroy.mathieu.go4lunch.Models.NearbySearch.NearbyResult;
@@ -32,9 +31,6 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -42,11 +38,15 @@ import io.reactivex.observers.DisposableObserver;
 
 public class MapViewFragment extends BaseFragment implements OnMapReadyCallback, GoogleMap.OnMyLocationClickListener, GoogleMap.OnMyLocationButtonClickListener, GoogleMap.OnMarkerClickListener, GoogleMap.OnCameraIdleListener {
 
+    public List<NearbyResult> nearbyResultList;
     private SupportMapFragment mapFragment;
     private GoogleMap mGoogleMap;
-    private List<NearbyResult> nearbyResultList;
     private GPSTracker mGPSTracker;
     private String position;
+    private MarkerOptions markerOptions;
+    private int height = 90;
+    private int width = 90;
+    private boolean isFirstLifeCycle = true;
 
     public static MapViewFragment newInstance() {
         return new MapViewFragment();
@@ -64,12 +64,28 @@ public class MapViewFragment extends BaseFragment implements OnMapReadyCallback,
         mGPSTracker = new GPSTracker(getContext());
 
         mapFragment = (SupportMapFragment) this.getChildFragmentManager().findFragmentById(R.id.map);
-        assert mapFragment != null;
-        mapFragment.getMapAsync(this);
 
         nearbyResultList = new ArrayList<>();
 
+        markerOptions = new MarkerOptions();
+
         return mView;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        mapFragment.getMapAsync(this);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (isFirstLifeCycle == false) {
+            mGoogleMap.clear();
+            updateGoogleUi(nearbyResultList);
+        }
     }
 
     // ------------------
@@ -82,7 +98,7 @@ public class MapViewFragment extends BaseFragment implements OnMapReadyCallback,
             @Override
             public void onNext(Google google) {
                 nearbyResultList.addAll(google.getResults());
-                updateGoogleUi();
+                updateGoogleUi(nearbyResultList);
             }
 
             @Override
@@ -109,10 +125,10 @@ public class MapViewFragment extends BaseFragment implements OnMapReadyCallback,
             mGoogleMap.setOnMyLocationButtonClickListener(this);
             mGoogleMap.setOnMyLocationClickListener(this);
             mGoogleMap.setOnCameraIdleListener(this);
-            }
+        }
         LatLng latLng = new LatLng(mGPSTracker.getLatitude(), mGPSTracker.getLongitude());
         position = mGPSTracker.getLatitude() + "," + mGPSTracker.getLongitude();
-        googleMap.addMarker(new MarkerOptions().position(latLng));
+
         CameraPosition cameraPosition = new CameraPosition.Builder().target(latLng).zoom(12).build();
         googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 
@@ -131,11 +147,9 @@ public class MapViewFragment extends BaseFragment implements OnMapReadyCallback,
     public boolean onMarkerClick(Marker marker) {
         Intent intent = new Intent(getContext(), RestaurantActivity.class);
         NearbyResult tag = (NearbyResult) marker.getTag();
-        String picture = tag.getPhotos().get(0).getPhotoReference();
         intent.putExtra(ID, tag.getPlaceId());
-        intent.putExtra(PICTURE, picture);
         startActivity(intent);
-            return false;
+        return false;
     }
 
     // Send a toast when the user click on a marker
@@ -149,26 +163,44 @@ public class MapViewFragment extends BaseFragment implements OnMapReadyCallback,
     }
 
     // Add markers for each result on Gmap
-    private void updateGoogleUi() {
-        int height = 90;
-        int width = 90;
-            BitmapDrawable bitmapDrawable = (BitmapDrawable) getResources().getDrawable(R.drawable.ic_restaurant_marker_orange);
-            Bitmap bitmap = bitmapDrawable.getBitmap();
-            Bitmap iconSize = Bitmap.createScaledBitmap(bitmap, width, height, false);
-            for (NearbyResult mResult : nearbyResultList) {
-                LatLng restau = new LatLng(mResult.getGeometry().getLocation().getLat(), mResult.getGeometry().getLocation().getLng());
-                Marker marker = mGoogleMap.addMarker(new MarkerOptions().position(restau)
-                        .title(mResult.getName())
-                        .snippet(mResult.getVicinity())
-                        .icon(BitmapDescriptorFactory.fromBitmap(iconSize)));
-                marker.setTag(mResult);
-            }
+    public void updateGoogleUi(List<NearbyResult> nearbyResultListFilter) {
+        mGoogleMap.clear();
+        isFirstLifeCycle = false;
+        for (NearbyResult mResult : nearbyResultListFilter) {
+            LatLng restaurant = new LatLng(mResult.getGeometry().getLocation().getLat(), mResult.getGeometry().getLocation().getLng());
+            UserHelper.getRestaurant(mResult.getPlaceId()).addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    markerOptions.position(restaurant);
+                    markerOptions.title(mResult.getName());
+                    markerOptions.snippet(mResult.getVicinity());
+                    if (getContext() != null) {
+                        if (task.getResult().isEmpty()) {
+                            BitmapDrawable bitmapDrawable = (BitmapDrawable) getResources().getDrawable(R.drawable.ic_restaurant_marker_orange);
+                            Bitmap bitmap = bitmapDrawable.getBitmap();
+                            Bitmap iconSize = Bitmap.createScaledBitmap(bitmap, width, height, false);
+                            markerOptions.icon(BitmapDescriptorFactory.fromBitmap(iconSize));
+                        } else {
+                            BitmapDrawable bitmapDrawable1 = (BitmapDrawable) getResources().getDrawable(R.drawable.ic_restaurant_marker_green);
+                            Bitmap bitmap1 = bitmapDrawable1.getBitmap();
+                            Bitmap iconSize1 = Bitmap.createScaledBitmap(bitmap1, width, height, false);
+                            markerOptions.icon(BitmapDescriptorFactory.fromBitmap(iconSize1));
+                        }
+                    }
+                    Marker marker = mGoogleMap.addMarker(markerOptions);
+                    marker.setTag(mResult);
+                }
+            });
         }
+    }
 
     // Call when the camera has ended
     // Get the latLngBounds from the camera and set it into a MainScreenActivity variable
     @Override
     public void onCameraIdle() {
         ((MainScreenActivity) getActivity()).setLatLngBounds(mGoogleMap.getProjection().getVisibleRegion().latLngBounds);
+    }
+
+    public void displayAllRestaurants() {
+        updateGoogleUi(nearbyResultList);
     }
 }
