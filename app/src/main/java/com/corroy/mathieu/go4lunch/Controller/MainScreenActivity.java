@@ -2,13 +2,6 @@ package com.corroy.mathieu.go4lunch.Controller;
 
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.core.view.GravityCompat;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -20,6 +13,15 @@ import android.widget.AutoCompleteTextView;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
+
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.corroy.mathieu.go4lunch.Fragments.ListViewFragment;
@@ -42,9 +44,11 @@ import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRe
 import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+
 import butterknife.BindView;
 
 public class MainScreenActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -111,7 +115,7 @@ public class MainScreenActivity extends BaseActivity implements NavigationView.O
         switch (id) {
             case R.id.yourLunch:
                 UserHelper.getBookingRestaurant(UserHelper.getCurrentUser().getUid()).addOnCompleteListener(task -> {
-                    if(task.isSuccessful()) {
+                    if (task.isSuccessful()) {
                         String restaurantId = task.getResult().getString(GET_RESTAURANT_ID);
                         if (restaurantId != null) {
                             Intent intent = new Intent(this, RestaurantActivity.class);
@@ -164,12 +168,12 @@ public class MainScreenActivity extends BaseActivity implements NavigationView.O
         });
     }
 
-    private void cleanAutoCompleteTextView(){
+    private void cleanAutoCompleteTextView() {
         autoCompleteTextView.setText("");
     }
 
     // This method show and replace fragments after touching the bottom navigation view buttons
-    private void displayFragments(Fragment fragment){
+    private void displayFragments(Fragment fragment) {
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.fragment_placeholder, fragment);
         fragmentTransaction.commitAllowingStateLoss();
@@ -220,9 +224,9 @@ public class MainScreenActivity extends BaseActivity implements NavigationView.O
                 String username = TextUtils.isEmpty(currentUser.getUsername()) ?
                         getResources().getString(R.string.no_username_found) : currentUser.getUsername();
                 nameTextView.setText(username);
-                });
-            }
+            });
         }
+    }
 
     // -----------------
     // REST REQUEST
@@ -268,7 +272,7 @@ public class MainScreenActivity extends BaseActivity implements NavigationView.O
     // AUTOCOMPLETE
     // ----------------
 
-    private void autoCompleteTextViewOnClick(){
+    private void autoCompleteTextViewOnClick() {
 
         autoCompleteTextView.addTextChangedListener(new TextWatcher() {
             @Override
@@ -283,16 +287,16 @@ public class MainScreenActivity extends BaseActivity implements NavigationView.O
 
             @Override
             public void afterTextChanged(Editable s) {
-                if(s.length() > 0){
+                if (s.length() > 0) {
                     configureAutoPredictions(s);
                 } else {
                     // Create a Fragment and find the view with the ID
                     Fragment fragmentById = getSupportFragmentManager().findFragmentById(R.id.fragment_placeholder);
                     // Check if the Fragment is an instance of ListViewFragment
-                    if(fragmentById instanceof ListViewFragment) {
+                    if (fragmentById instanceof ListViewFragment) {
                         // Cast the Fragment with the ListViewFragment to call the displayAllRestaurants method
                         ((ListViewFragment) fragmentById).displayAllRestaurants();
-                    } else if (fragmentById instanceof MapViewFragment){
+                    } else if (fragmentById instanceof MapViewFragment) {
                         ((MapViewFragment) fragmentById).displayAllRestaurants();
                     }
                 }
@@ -301,34 +305,34 @@ public class MainScreenActivity extends BaseActivity implements NavigationView.O
         });
 
         // Handle the user click on the AutoCompleteTextView
-            autoCompleteTextView.setOnItemClickListener((parent, view1, position, id) -> {
+        autoCompleteTextView.setOnItemClickListener((parent, view1, position, id) -> {
 
-                String item = adapter.getItem(position);
-                // Create an ArrayList to contain the filter result
-                List<NearbyResult> nearbyResultListFilter = new ArrayList<>();
-                // Create an ArrayList to contain the request result
-                List<NearbyResult> nearbyResultList = new ArrayList<>();
-                Fragment fragmentById = getSupportFragmentManager().findFragmentById(R.id.fragment_placeholder);
-                if(fragmentById instanceof ListViewFragment) {
+            String item = adapter.getItem(position);
+            // Create an ArrayList to contain the filter result
+            List<NearbyResult> nearbyResultListFilter = new ArrayList<>();
+            // Create an ArrayList to contain the request result
+            List<NearbyResult> nearbyResultList = new ArrayList<>();
+            Fragment fragmentById = getSupportFragmentManager().findFragmentById(R.id.fragment_placeholder);
+            if (fragmentById instanceof ListViewFragment) {
                 // Fill the new List with the fragment list result
-                   nearbyResultList = ((ListViewFragment) fragmentById).nearbyResultList;
-                } else if (fragmentById instanceof MapViewFragment){
-                   nearbyResultList = ((MapViewFragment) fragmentById).nearbyResultList;
+                nearbyResultList = ((ListViewFragment) fragmentById).nearbyResultList;
+            } else if (fragmentById instanceof MapViewFragment) {
+                nearbyResultList = ((MapViewFragment) fragmentById).nearbyResultList;
+            }
+            // For each NearbyResult into the ArrayList
+            for (NearbyResult nearbyResult : nearbyResultList) {
+                if (nearbyResult.getName().equals(item)) {
+                    // Add the specific result of nearbyResult into nearbyResultList
+                    nearbyResultListFilter.add(nearbyResult);
                 }
-                // For each NearbyResult into the ArrayList
-                for (NearbyResult nearbyResult : nearbyResultList) {
-                    if(nearbyResult.getName().equals(item)){
-                        // Add the specific result of nearbyResult into nearbyResultList
-                        nearbyResultListFilter.add(nearbyResult);
-                    }
-                }
-                if(fragmentById instanceof ListViewFragment) {
-                    ((ListViewFragment) fragmentById).refreshRestaurants(nearbyResultListFilter);
-                } else if (fragmentById instanceof MapViewFragment){
-                    ((MapViewFragment) fragmentById).updateGoogleUi(nearbyResultListFilter);
-                }
-            });
-        }
+            }
+            if (fragmentById instanceof ListViewFragment) {
+                ((ListViewFragment) fragmentById).refreshRestaurants(nearbyResultListFilter);
+            } else if (fragmentById instanceof MapViewFragment) {
+                ((MapViewFragment) fragmentById).updateGoogleUi(nearbyResultListFilter);
+            }
+        });
+    }
 
     private void configureAutoPredictions(Editable s) {
         PlacesClient placesClient = Places.createClient(this);
@@ -363,11 +367,11 @@ public class MainScreenActivity extends BaseActivity implements NavigationView.O
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        MenuItem menuItem = menu.add(Menu.NONE, Menu.NONE, Menu.NONE, R.string.search_a_restaurant);
+        MenuItem menuItem = menu.add(Menu.NONE, R.id.search_icon, Menu.NONE, R.string.search_a_restaurant);
         menuItem.setIcon(R.drawable.searchicon);
         menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
         menuItem.setOnMenuItemClickListener(item -> {
-            if(autoCompleteTextView.getVisibility() == View.INVISIBLE){
+            if (autoCompleteTextView.getVisibility() == View.INVISIBLE) {
                 autoCompleteTextView.setVisibility(View.VISIBLE);
             } else {
                 autoCompleteTextView.setVisibility(View.INVISIBLE);
