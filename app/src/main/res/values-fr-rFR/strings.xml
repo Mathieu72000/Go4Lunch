@@ -45,6 +45,7 @@
     <string name="off">Désactiver</string>
     <string name="on">Activer</string>
     <string name="search_a_restaurant">Rechercher un restaurant</string>
-    <string name="notification">Vous mangez à %1$s qui se trouve au %2$s avec %3$s</string>
+    <string name="notification">Vous mangez à %1$s qui se trouve au %2$s avec : %3$s</string>
+    <string name="notification_alone">Vous mangez à %1$s qui se trouve au %2$s avec : Personne</string>
     <string name="notification_title">Notification</string>
 </resources>

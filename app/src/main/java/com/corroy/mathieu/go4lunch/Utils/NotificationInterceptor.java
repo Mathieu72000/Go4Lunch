@@ -95,8 +95,14 @@ public class NotificationInterceptor extends BatchNotificationInterceptor {
         }
 
         // intercept the notification and modify it before display
+        String textBrackets = userList.toString().replace("[", "").replace("]", "");
+
         if (currentUserJoinedRestaurant != null) {
-            new NotificationCompat.BigTextStyle(defaultBuilder).bigText(context.getString(R.string.notification, currentUserJoinedRestaurant, restaurantVicinity, userList.toString()));
+            if (userList.isEmpty()) {
+                new NotificationCompat.BigTextStyle(defaultBuilder).bigText(context.getString(R.string.notification_alone, currentUserJoinedRestaurant, restaurantVicinity));
+            } else {
+                new NotificationCompat.BigTextStyle(defaultBuilder).bigText(context.getString(R.string.notification, currentUserJoinedRestaurant, restaurantVicinity, textBrackets));
+            }
             return defaultBuilder;
         } else {
             return null;

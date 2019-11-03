@@ -67,6 +67,7 @@
     <string name="off">off</string>
     <string name="on">on</string>
     <string name="search_a_restaurant">Search a restaurant</string>
-    <string name="notification">You eat at %1$s where is at %2$s with %3$s</string>
+    <string name="notification">You eat at %1$s where is at %2$s with : %3$s</string>
+    <string name="notification_alone">You eat at %1$s where is at %2$s with : No one</string>
     <string name="notification_title">Notification</string>
 </resources>

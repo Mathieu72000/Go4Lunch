@@ -135,10 +135,6 @@ public class UserHelper {
                 });
     }
 
-    // ------------
-    // FIREBASE
-    // ------------
-
     public static void getCoWorkers(OnRequestListener onRequestListener) {
         List<User> users = new ArrayList<>();
         FirebaseFirestore.getInstance()

@@ -46,7 +46,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import butterknife.BindView;
-import butterknife.OnClick;
 
 public class MainScreenActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener {
 

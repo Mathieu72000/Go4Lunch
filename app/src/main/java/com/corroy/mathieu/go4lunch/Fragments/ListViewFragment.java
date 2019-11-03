@@ -2,49 +2,37 @@ package com.corroy.mathieu.go4lunch.Fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
-import com.corroy.mathieu.go4lunch.Controller.MainScreenActivity;
+
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.corroy.mathieu.go4lunch.Controller.RestaurantActivity;
 import com.corroy.mathieu.go4lunch.Models.NearbySearch.Google;
 import com.corroy.mathieu.go4lunch.Models.NearbySearch.NearbyResult;
 import com.corroy.mathieu.go4lunch.R;
-import com.corroy.mathieu.go4lunch.Controller.RestaurantActivity;
 import com.corroy.mathieu.go4lunch.Utils.GPSTracker;
 import com.corroy.mathieu.go4lunch.Utils.Go4LunchStreams;
 import com.corroy.mathieu.go4lunch.Utils.ItemClickSupport;
 import com.corroy.mathieu.go4lunch.Views.RestaurantsAdapter;
-import com.google.android.gms.maps.model.LatLngBounds;
-import com.google.android.libraries.places.api.Places;
-import com.google.android.libraries.places.api.model.AutocompletePrediction;
-import com.google.android.libraries.places.api.model.AutocompleteSessionToken;
-import com.google.android.libraries.places.api.model.Place;
-import com.google.android.libraries.places.api.model.RectangularBounds;
-import com.google.android.libraries.places.api.model.TypeFilter;
-import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest;
-import com.google.android.libraries.places.api.net.PlacesClient;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.reactivex.observers.DisposableObserver;
 
 public class ListViewFragment extends BaseFragment {
 
+    public List<NearbyResult> nearbyResultList;
     @BindView(R.id.listview_recyclerview)
     RecyclerView recyclerView;
     private String position;
-    public List<NearbyResult> nearbyResultList;
-    public RestaurantsAdapter listViewAdapter;
+    private RestaurantsAdapter listViewAdapter;
 
     public static ListViewFragment newInstance() {
         return new ListViewFragment();
@@ -110,7 +98,6 @@ public class ListViewFragment extends BaseFragment {
         });
     }
 
-    // Method
     public void displayAllRestaurants() {
         listViewAdapter.refreshAdapter(nearbyResultList);
     }

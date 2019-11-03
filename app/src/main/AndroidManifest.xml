@@ -13,26 +13,26 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <!-- NOTIFICATION SERVICE -->
-        <service android:name=".Utils.NotificationService">
-            <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
-            </intent-filter>
-        </service>
-        <activity android:name=".Controller.SettingsActivity"
-            android:label="@string/setting">
-        </activity>
+
+        <!-- ACTIVITIES -->
+
+        <activity
+            android:name=".Controller.SettingsActivity"
+            android:label="@string/setting" />
         <activity android:name=".Controller.RestaurantActivity" />
         <activity android:name=".Controller.MainScreenActivity" />
         <activity android:name=".Controller.LogInActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
-        <meta-data android:name="batch_opted_out_by_default" android:value="false" />
+        <!-- META-DATA -->
+
+        <meta-data
+            android:name="batch_opted_out_by_default"
+            android:value="false" />
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
@@ -40,13 +40,15 @@
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
     </application>
+
+    <!-- PERMISSIONS -->
+
     <uses-feature android:name="android.hardware.location.gps" />
+
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
-
     <uses-permission android:name="android.permission.INTERNET" />
-
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <dist:module dist:instant="true" />

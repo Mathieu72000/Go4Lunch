@@ -15,11 +15,8 @@
         <ImageView
             android:id="@+id/activity_restaurant_restaurant_picture"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="30"
-            tools:background="@drawable/lunchbackground"
-            android:orientation="horizontal"
-            android:scaleType="fitXY"/>
+            android:layout_height="250dp"
+            tools:background="@drawable/lunchbackground" />
 
         <LinearLayout
             android:id="@+id/viewB"
